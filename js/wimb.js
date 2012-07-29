@@ -1,3 +1,5 @@
+// NOTE: This non-minified file is kept for reference; it is not used anywhere
+
 /**
  * Handles adjusting and auto-submitting the form upon user interaction
  *
@@ -10,7 +12,8 @@
 			$ccmBody = $('div.ccm-pane-body'),
 			$ccmFooter = $('div.ccm-pane-footer'),
 			$form = $('div#ccm-dashboard-content form#wimb'),
-			$select = $form.find('select');
+			$loader = $('img#ccm-wimb-loading'),
+			$select = $form.find('select'),
 			$btidSelect = $select.filter('select[name="btid"]'),
 			$ippSelect = $select.filter('select[name="ipp"]'),
 			$sortInput = $form.find('input[name="sort_by"]'),
@@ -29,6 +32,8 @@
 		 * @since July 12, 2012
 		 */
 		function submitForm(){
+			$loader.show();
+			
 			// Clear any previous alerts, messages, result tables and pagination
 			$('div#ccm-dashboard-result-message').remove();
 			$ccmBody.find('.responseText').remove();
@@ -50,8 +55,6 @@
 			sQuery = sQuery.slice(0, sQuery.length - 1);
 			
 			$.get(WIMB_TOOLS_URL + sQuery, handleResponse, 'json');
-			
-			//console.log(sQuery);
 		}
 		
 		
@@ -133,6 +136,8 @@
 					$ccmBody.prepend($message);
 				}
 			}
+			
+			$loader.hide();
 		}
 		
 		// Interrupt the normal form submission so we can use our custom method
@@ -147,7 +152,11 @@
 			var $this = $(this);
 			
 			$this.on('change', function(e){
-				if($btidSelect.find(':selected').val().length > 0) submitForm();
+				if($btidSelect.find(':selected').val().length > 0){
+					$pagingInput.val(1);
+					
+					submitForm();
+				} 
 			});
 		});
 		
@@ -170,7 +179,7 @@
 		// then auto-submit
 		$ccmFooter.on('click', 'div.ccm-pagination a', function(e){
 			var aMatch = /ccm_paging_p=(\d+)/.exec(this.href),
-				iPage = aMatch instanceof Array && aMatch.length > 1 ? parseInt(aMatch[1]) : 1;
+				iPage = ((aMatch instanceof Array) && aMatch.length > 1) ? parseInt(aMatch[1]) : 1;
 			
 			$pagingInput.val(iPage);
 			
