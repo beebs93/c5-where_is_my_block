@@ -4,7 +4,7 @@ defined('C5_EXECUTE') or die('Access Denied.');
 class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	protected $arrBlockTypes = array();
 	protected $arrAllowedBtIds = array();
-	protected $arrItemsPerPage = array(2, 10, 25, 50, 100, 500);
+	protected $arrItemsPerPage = array(10, 25, 50, 100, 500);
 	protected $arrSortableCols = array('page_name', 'page_path', 'instances');
 	public $helpers = array('concrete/dashboard', 'navigation', 'text');
 	
@@ -60,7 +60,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	
 	
 	/**
-	 * Sets helpers in the view scope
+	 * Implementation of on_start()
 	 * 
 	 * @return void
 	 * 
@@ -71,6 +71,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		$this->set('objDh', $this->helperObjects['concrete_dashboard']);
 		$this->set('objNh', $this->helperObjects['navigation']);
 		$this->set('objTh', $this->helperObjects['text']);
+		$this->set('objPkg', Loader::package('where_is_my_block'));
 		
 		parent::on_start();
 	}
@@ -91,7 +92,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
 		$this->addHeaderItem('<script type="text/javascript">var WIMB_TOOLS_URL = "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";</script>');
-		$this->addHeaderItem($objHh->javascript('wimb.js', 'where_is_my_block'));
+		$this->addHeaderItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
 		
 		// Set form options in view scope
 		$this->set('arrBlockTypes', $this->arrBlockTypes);
@@ -124,7 +125,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	
 	
 	/**
-	 * Checks if a block type ID is in the list of allowed block type IDs the can be searched
+	 * Checks if a block type ID is in the list of allowed block type IDs that can be searched
 	 * 
 	 * @param mixed $btId - A block type ID
 	 * @return boolean

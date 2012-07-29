@@ -1,11 +1,11 @@
 <?php 
 defined('C5_EXECUTE') or die('Access Denied.');
 
-// Type cast and validate vars passed from controller
+// Type cast vars passed from controller
 $arrBlockTypes = (array) $arrBlockTypes;
 $arrItemsPerPage = (array) $arrItemsPerPage;
 
-// Get link(s) for help block(s)
+// Get links for any help blocks
 $strClearCacheUrl = $objNh->getLinkToCollection(Page::getByPath('/dashboard/system/optimization/clear_cache'), TRUE);
 
 // Generate option elements for block type select menu
@@ -31,7 +31,7 @@ foreach($arrItemsPerPage as $intPerPage){
 }
 
 // Begin pane
-echo $objDh->getDashboardPaneHeaderWrapper(t('Where Is My Block?'), t('Lists the pages that contain a specific block type'), 'span16', false);
+echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->getPackageDescription(), 'span16', false);
 ?>
 
 <div class="ccm-pane-options clearfix">
@@ -53,15 +53,16 @@ echo $objDh->getDashboardPaneHeaderWrapper(t('Where Is My Block?'), t('Lists the
 				
 				<?php echo $interface->submit(t('Search'), 'wimb', 'left', 'secondary'); ?>
 				
+				<img src="/concrete/images/loader_intelligent_search.gif" width="43" height="11" id="ccm-wimb-loading" />
 			</div>
 		<!-- .row --></div>
 	<!-- #wimb --></form>
 <!-- .ccm-pane-options --></div>
 
 <div class="ccm-pane-body">
-	<span class="help-block">Some pages may be omitted due to your current viewing permissions.</span>
-	<span class="help-block">System pages (e.g. <em>Login, Error 404, dashboard pages, etc.</em>) are not searched.</span>
-	<span class="help-block">You may also want to <a href="<?php echo $strClearCacheUrl; ?>">clear your cache</a> to ensure you have the most up-to-date results.</span>
+	<span class="help-block"><?php echo t('Some pages may be omitted due to your current viewing permissions.'); ?></span>
+	<span class="help-block"><?php echo t('System pages (e.g. <em>Login, Error 404, dashboard pages, etc.</em>) are not searched.'); ?></span>
+	<span class="help-block"><?php echo t('You may also want to <a href="' . $strClearCacheUrl . '">clear your cache</a> to ensure you have the most up-to-date results.'); ?></span>
 <!-- .ccm-pane-body --></div>
 	
 <div class="ccm-pane-footer"></div>
