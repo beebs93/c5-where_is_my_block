@@ -22,9 +22,9 @@ $htmError = FALSE;
 if(!is_numeric($intSearchBtId) || $intSearchBtId < 0){
 	$htmError = $objController->getAlert('...Really?', 'error');
 }elseif($intSearchBtId == 0){
-	$htmError = $objController->getAlert('You need to select a block type to search for', 'warning');
+	$htmError = $objController->getAlert(t('You need to select a block type to search for'), 'warning');
 }elseif(!$objController->isAllowedBlockTypeId($intSearchBtId)){
-	$htmError = $objController->getAlert('You cannot search for that block type', 'error');
+	$htmError = $objController->getAlert(t('You cannot search for that block type'), 'error');
 }
 
 // Return any errors
@@ -32,7 +32,7 @@ if($htmError){
 	$objResp = new stdClass();
 	$objResp->status = 'error';
 	$objResp->alert = $htmError;
-	$objResp->message = 'No pages found with that block type';
+	$objResp->message = t('There was an error with your request');
 	
 	header('Content-type: application/json');
 	echo $objJh->encode($objResp);
@@ -155,7 +155,7 @@ if(count($arrPageIds) > 0){
 	$objResp = new stdClass();
 	$objResp->status = 'error';
 	$objResp->alert = '';
-	$objResp->message = 'No pages contain that block type';
+	$objResp->message = t('No pages contain that block type');
 	
 	header('Content-type: application/json');
 	echo $objJh->encode($objResp);
