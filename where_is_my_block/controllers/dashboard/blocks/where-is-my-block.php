@@ -45,11 +45,11 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		
 		// Sort the array by category then by handle
 		// We skip checking for a filled array since concrete5
-		// should always have at least the core blocks installed
+		// should always have at least the core blocks installed.
 		// Should someone manually remove ALL the block types in their
 		// c5 install then obviously that will break this addon, but in
 		// that situation I have a sinking feeling this addon will be
-		// the least of their problems
+		// the least of their problems...
 		usort($this->arrBlockTypes, create_function('$a, $b', '
 			if($a["category"] == $b["category"]){
 				return strnatcmp($a["handle"], $b["handle"]);
@@ -79,7 +79,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	
 	/**
 	 * Single page view
-	 * Retrieves the list of core and 3rd party blocks types
+	 * Adds any CSS/JS and sets any form options in the view scope
 	 * 
 	 * @return void
 	 * 
@@ -90,11 +90,12 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		$objUh = Loader::helper('concrete/urls');
 		$objHh = Loader::helper('html');
 		
+		$strJs = 'var WIMB_TOOLS_URL = WIMB_TOOLS_URL || "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";';
+		
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
-		$this->addHeaderItem('<script type="text/javascript">var WIMB_TOOLS_URL = "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";</script>');
+		$this->addHeaderItem('<script type="text/javascript">' . $strJs . '</script>');
 		$this->addHeaderItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
 		
-		// Set form options in view scope
 		$this->set('arrBlockTypes', $this->arrBlockTypes);
 		$this->set('arrItemsPerPage', $this->arrItemsPerPage);
 	}
@@ -125,7 +126,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	
 	
 	/**
-	 * Checks if a block type ID is in the list of allowed block type IDs that can be searched
+	 * Checks if a block type ID is in the list of allowed block type IDs that can be searched for
 	 * 
 	 * @param mixed $btId - A block type ID
 	 * @return boolean

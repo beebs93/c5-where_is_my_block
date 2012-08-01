@@ -8,7 +8,7 @@ class WhereIsMyBlockPackage extends Package{
 	
 	
 	/**
-	 * Get package description
+	 * Returns the package description
 	 * 
 	 * @return string
 	 *
@@ -21,7 +21,7 @@ class WhereIsMyBlockPackage extends Package{
 	
 	
 	/**
-	 * Get package name
+	 * Returns the package name
 	 *
 	 * @return string
 	 *

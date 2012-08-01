@@ -11,16 +11,16 @@ $intSearchBtId = (int) $_GET['btid'];
 $intSearchIpp = (int) $_GET['ipp'];
 if(!$objController->isValidItemsPerPage($intSearchIpp)) $intSearchIpp = 10;
 
-$strSearchSort = (string) $_GET['sort_by'];
+$strSearchSort = strtolower((string) $_GET['sort_by']);
 if(!$objController->isValidSortableCol($strSearchSort)) $strSearchSort = 'page_name';
 
-$strSearchDir = (string) $_GET['sort_dir'];
+$strSearchDir = strtolower((string) $_GET['sort_dir']);
 if($strSearchDir != 'asc') $strSearchDir = 'desc';
 
 // Check for a valid block type ID
 $htmError = FALSE;
 if(!is_numeric($intSearchBtId) || $intSearchBtId < 0){
-	$htmError = $objController->getAlert('...Really?', 'error');
+	$htmError = $objController->getAlert(t('...Really?'), 'error');
 }elseif($intSearchBtId == 0){
 	$htmError = $objController->getAlert(t('You need to select a block type to search for'), 'warning');
 }elseif(!$objController->isAllowedBlockTypeId($intSearchBtId)){
@@ -139,7 +139,7 @@ if(count($arrPageIds) > 0){
 	$arrPageBlockInfo = array_values($arrPageBlockInfo);
 	
 	// Get pagination HTML
-	$htmPgn = (string) $objPl->displayPagingV2(FALSE, TRUE);
+	$htmPgn = $objPl->getSummary()->pages > 1 ? (string) $objPl->displayPagingV2(FALSE, TRUE) : '';
 
 	$objResp = new stdClass();
 	$objResp->status = 'success';
