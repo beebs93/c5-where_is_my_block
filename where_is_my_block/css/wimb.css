@@ -23,3 +23,11 @@ table#ccm-where-is-my-block th:first-child,
 table#ccm-where-is-my-block th:first-child + th{
 	width:45%;
 }
+
+table#ccm-where-is-my-block tr.ccm-list-record td{
+	cursor:default;
+}
+
+table#ccm-where-is-my-block tr.ccm-list-record a{
+	display:block;
+}
