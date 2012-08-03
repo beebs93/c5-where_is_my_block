@@ -46,7 +46,7 @@ $strHomePath = strlen($objHome->cPath) > 0 ? $objHome->cPath : '';
 // Get a list of all the non-aliased pages that the current user has permission to view
 $objPl = new PageList();
 $objPl->filterByPath($strHomePath, TRUE);
-$objPl->setupPermissions();
+//$objPl->setupPermissions();  // TODO need a secure way to check for page permissions
 $objPl->ignoreAliases();
 $arrPages = (array) $objPl->get();
 
