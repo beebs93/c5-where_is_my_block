@@ -66,16 +66,21 @@ if(count($arrPageIds) > 0){
 	// Get a paginated list of pages with the block type we are searching for			
 	$objPl = new PageList();
 	$objPl->filter(FALSE, $strFilter);
-	$objPl->setItemsPerPage($intSearchIpp);
-				
+	$objPl->setItemsPerPage($intSearchIpp);				
 	if($strSearchSort == 'page_name') $objPl->sortBy('cvName', $strSearchDir);
 	
-	$arrPages = (array) $objPl->getPage();
+	// Clone PageList so we can get entire non-paginated result set
+	$objPlClone = clone $objPl;
+	
+	// Get paginated results
+	$arrPages = (array) $objPl->getPage();	
+	// Get non-paginated results (to allow for accurate custom sorting)
+	$arrAllPages = (array) $objPlClone->get();
 
 	// Get the page name, path and number of instances for the block type on each page
 	// we received from the first PageList request
 	$arrPageBlockInfo = array();
-	foreach($arrPages as $objPage){
+	foreach($arrAllPages as $objPage){
 		if((!$objPage instanceof Page) || $objPage->error) continue;
 
 		$strName = $objPage->getCollectionName();
@@ -99,8 +104,7 @@ if(count($arrPageIds) > 0){
 				'instances' => 1
 			);
 		}
-	}
-	
+	}	
 	
 	// Sort by instances (if requested)
 	if($strSearchSort == 'instances'){
@@ -123,8 +127,17 @@ if(count($arrPageIds) > 0){
 	// Re-index array keys
 	$arrPageBlockInfo = array_values($arrPageBlockInfo);
 	
-	// Get pagination HTML
-	$htmPgn = $objPl->getSummary()->pages > 1 ? (string) $objPl->displayPagingV2(FALSE, TRUE) : '';
+	// If the results are paginated we get the pagination HTML and slice our custom results array
+	// to reflect the current offset and items per page parameter
+	if($objPl->getSummary()->pages > 1){
+		$objPgn = $objPl->getPagination();
+		
+		$arrPageBlockInfo = array_slice($arrPageBlockInfo, $objPgn->result_offset, $objPgn->page_size);
+		
+		$htmPgn = (string) $objPl->displayPagingV2(FALSE, TRUE);
+	}else{
+		$htmPgn = '';	
+	}
 
 	$objResp = new stdClass();
 	$objResp->status = 'success';
@@ -135,7 +148,7 @@ if(count($arrPageIds) > 0){
 	
 	header('Content-type: application/json');
 	echo $objJh->encode($objResp);
-	exit;	
+	exit;
 }else{
 	$objResp = new stdClass();
 	$objResp->status = 'error';
