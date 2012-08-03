@@ -6,6 +6,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	protected $arrAllowedBtIds = array();
 	protected $arrItemsPerPage = array(10, 25, 50, 100, 500);
 	protected $arrSortableCols = array('page_name', 'page_path', 'instances');
+	public $arrAllowedPageObjs = array();
 	public $helpers = array('concrete/dashboard', 'navigation', 'text');
 	
 		
@@ -56,6 +57,26 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 			}
 			return strnatcmp($a["category"], $b["category"]);
 		'));
+		
+		// Set the list of all the page IDs the current user can view		
+		Loader::model('page_list');
+		
+		$objHome = Page::getByID(HOME_CID);
+		$strHomePath = strlen($objHome->cPath) > 0 ? $objHome->cPath : '';
+		
+		$objPl = new PageList();
+		$objPl->filterByPath($strHomePath, TRUE);
+		$objPl->ignoreAliases();
+		$arrPages = (array) $objPl->get();
+		
+		foreach($arrPages as $objPage){
+			$objPerm = new Permissions($objPage);
+			
+			if($objPerm->canRead()) $this->arrAllowedPageObjs[] = $objPage;	
+		}
+		
+		// Prepend home page ID
+		array_unshift($this->arrAllowedPageObjs, $objHome);
 	}
 	
 	
@@ -122,7 +143,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		</div>';
 		
 		return preg_replace('/[\r\n\t]/', '', sprintf($tmpAlert, (string) $strMsg, (string) $strSeverity));
-	}
+	}	
 	
 	
 	/**
@@ -164,5 +185,5 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 */
 	public function isValidItemsPerPage($ipp){
 		return (is_numeric($ipp)) && in_array((int) $ipp, $this->arrItemsPerPage);
-	}
+	}		
 }

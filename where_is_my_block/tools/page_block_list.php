@@ -2,7 +2,6 @@
 defined('C5_EXECUTE') or die('Access Denied.');
 Loader::model('page_list');
 $objJh = Loader::helper('json');
-$objNh = Loader::helper('navigation');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');
 
 // Extract search parameters
@@ -39,25 +38,11 @@ if($htmError){
 	exit;
 }
 
-// Get home page path
-$objHome = Page::getByID(HOME_CID);
-$strHomePath = strlen($objHome->cPath) > 0 ? $objHome->cPath : '';
-
-// Get a list of all the non-aliased pages that the current user has permission to view
-$objPl = new PageList();
-$objPl->filterByPath($strHomePath, TRUE);
-//$objPl->setupPermissions();  // TODO need a secure way to check for page permissions
-$objPl->ignoreAliases();
-$arrPages = (array) $objPl->get();
-
-// Add home Page object to list of pages
-$arrPages[] = $objHome;
-
 // Generate list of page IDs that contain the block type we are searching for
 // NOTE: If there is a more elegant way to do this I am all ears
 $arrPageIds = array();
-foreach($arrPages as $objPage){
-	if((!$objPage instanceof Page) || $objPage->error) continue;
+foreach($objController->arrAllowedPageObjs as $objPage){
+	if((!is_object($objPage)) || !$objPage instanceof Page || $objPage->error) continue;
 	
 	$intPageId = $objPage->getCollectionID();
 	
@@ -110,7 +95,7 @@ if(count($arrPageIds) > 0){
 
 			$arrPageBlockInfo[$strPath] = array(
 				'page_name' => $strName,
-				'page_path' => $objNh->getLinkToCollection($objPage, TRUE),
+				'page_path' => $strPath,
 				'instances' => 1
 			);
 		}

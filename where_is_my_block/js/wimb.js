@@ -106,7 +106,7 @@ $(document).ready(function(){
 					
 					sTable += '<td>';
 					
-					sTable += (sCol == 'page_path') ? '<a href="' + oRow[sCol] + '" target="_blank">' + sEncodedVal + '</a>' : sEncodedVal;
+					sTable += (sCol == 'page_path') ? '<a href="' + CCM_BASE_URL + oRow[sCol] + '" target="_blank">' + sEncodedVal + '</a>' : sEncodedVal;
 					
 					sTable += '</td>'
 				}
