@@ -63,6 +63,8 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->g
 	<span class="help-block"><?php echo t('Some pages may be omitted due to your current viewing permissions.'); ?></span>
 	<span class="help-block"><?php echo t('System pages (e.g. <em>Login, Error 404, dashboard pages, etc.</em>) are not searched.'); ?></span>
 	<span class="help-block"><?php echo t('You may also want to <a href="' . $strClearCacheUrl . '">clear your cache</a> to ensure you have the most up-to-date results.'); ?></span>
+    
+    <div id="bodyOverlay"></div>
 <!-- .ccm-pane-body --></div>
 	
 <div class="ccm-pane-footer"></div>

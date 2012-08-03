@@ -11,6 +11,7 @@
 $(document).ready(function(){
 	var $container = $('div.ccm-dashboard-page-container'),
 		$ccmBody = $('div.ccm-pane-body'),
+		$overlay = $('div#bodyOverlay'),
 		$ccmFooter = $('div.ccm-pane-footer'),
 		$form = $('div#ccm-dashboard-content form#wimb'),
 		$loader = $('img#ccm-wimb-loading'),
@@ -34,11 +35,11 @@ $(document).ready(function(){
 	 */
 	function submitForm(){
 		$loader.show();
+		$overlay.show();
 		
 		// Clear any previous alerts, messages, result tables and pagination
 		$('div#ccm-dashboard-result-message').remove();
-		$ccmBody.find('.responseText').remove();
-		$ccmBody.find('table.ccm-results-list').remove();
+		$ccmBody.find('.responseText').remove();		
 		$ccmFooter.find('div.ccm-pagination').remove();
 		
 		// Get the form input values
@@ -72,6 +73,9 @@ $(document).ready(function(){
 	 */
 	function handleResponse(oData){
 		var oData = oData || {};
+		
+		// Remove any previous results
+		$ccmBody.find('table.ccm-results-list').remove();
 		
 		// Success
 		if(oData.status === 'success' && oData.response && oData.response instanceof Array && oData.response.length > 0){
@@ -139,6 +143,9 @@ $(document).ready(function(){
 		}
 		
 		$loader.hide();
+		$overlay.fadeTo(500, 0, function(){
+			$overlay.css('opacity', '').hide();	
+		});
 	};
 	
 	// Interrupt the normal form submission so we can use our custom method
