@@ -1,5 +1,5 @@
 <?php      
-defined('C5_EXECUTE') or die('Access Denied.');
+defined('C5_EXECUTE') or die(_('Access Denied.'));
 
 class WhereIsMyBlockPackage extends Package{
 	protected $pkgHandle = 'where_is_my_block';
@@ -29,7 +29,7 @@ class WhereIsMyBlockPackage extends Package{
 	 * @since July 12, 2012
 	 */	
 	public function getPackageName(){
-		// The willpower it took to not name this, "Dude, Where's my Block?" was biblical
+		// It took a LOT of willpower not to name this "Dude, where's my block?"
 		return t('Where Is My Block?');
 	}
 	

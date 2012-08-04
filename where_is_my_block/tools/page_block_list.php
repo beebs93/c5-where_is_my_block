@@ -1,5 +1,6 @@
 <?php
-defined('C5_EXECUTE') or die('Access Denied.');
+defined('C5_EXECUTE') or die(_('Access Denied.'));
+
 Loader::model('page_list');
 $objJh = Loader::helper('json');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');

@@ -1,5 +1,5 @@
 <?php
-defined('C5_EXECUTE') or die('Access Denied.');
+defined('C5_EXECUTE') or die(_('Access Denied.'));
 
 class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	protected $arrBlockTypes = array();
