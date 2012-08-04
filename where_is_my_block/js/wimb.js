@@ -187,8 +187,21 @@ $(document).ready(function(){
 	// Interrupt the normal pagination links to adjust the appropriate form inputs
 	// then auto-submit
 	$ccmFooter.on('click', 'div.ccm-pagination a', function(e){
-		var aMatch = /ccm_paging_p=(\d+)/.exec(this.href),
-			iPage = ((aMatch instanceof Array) && aMatch.length > 1) ? parseInt(aMatch[1]) : 1;
+		var $this = $(this),
+			aMatch = /ccm_paging_p=(\d+)/.exec(this.href),
+			iPage;
+		
+		// Extract the page number or find the average if clicking on a '...' link
+		if((aMatch instanceof Array) && aMatch.length > 1){
+			iPage = parseInt(aMatch[1]);
+		}else if($this.text() == '...'){
+			var iPrev = parseInt($this.parent().prev().find('a:first-child').text()),
+				iNext = parseInt($this.parent().next().find('a:first-child').text());
+			
+			iPage = Math.floor((iPrev + iNext) / 2);
+		}else{
+			iPage = 1;
+		}
 		
 		$pagingInput.val(iPage);
 		
