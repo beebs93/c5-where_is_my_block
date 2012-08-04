@@ -5,8 +5,17 @@ defined('C5_EXECUTE') or die('Access Denied.');
 $arrBlockTypes = (array) $arrBlockTypes;
 $arrItemsPerPage = (array) $arrItemsPerPage;
 
-// Get links for any help blocks
-$strClearCacheUrl = $objNh->getLinkToCollection(Page::getByPath('/dashboard/system/optimization/clear_cache'), TRUE);
+// Get links for any help blocks (ensure user can view them beforehand)
+$objCache = Page::getByPath('/dashboard/system/optimization/clear_cache');
+$objPerm = new Permissions($objCache);
+
+if(!$objPerm->canRead()){
+	$htmHelpLinks = '';
+}else{
+	$strClearCacheUrl = $objNh->getLinkToCollection($objCache, TRUE);
+	
+	$htmHelpLinks = '<span class="help-block">' . t('You may also want to <a href="' . $strClearCacheUrl . '">clear your cache</a> to ensure you have the most up-to-date results.') . '</span>';
+}
 
 // Generate option elements for block type select menu
 $htmBtOpts = '<option value="">' . t('Choose a block type') . '</option>';
@@ -62,7 +71,8 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->g
 <div class="ccm-pane-body">
 	<span class="help-block"><?php echo t('Some pages may be omitted due to your current viewing permissions.'); ?></span>
 	<span class="help-block"><?php echo t('System pages (e.g. <em>Login, Error 404, dashboard pages, etc.</em>) are not searched.'); ?></span>
-	<span class="help-block"><?php echo t('You may also want to <a href="' . $strClearCacheUrl . '">clear your cache</a> to ensure you have the most up-to-date results.'); ?></span>
+	
+	<?php echo $htmHelpLinks;?>
     
     <div id="bodyOverlay"></div>
 <!-- .ccm-pane-body --></div>
