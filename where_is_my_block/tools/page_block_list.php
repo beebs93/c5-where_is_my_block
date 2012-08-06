@@ -15,7 +15,7 @@ $strSearchSort = strtolower((string) $_GET['sort_by']);
 if(!$objController->isValidSortableCol($strSearchSort)) $strSearchSort = 'page_name';
 
 $strSearchDir = strtolower((string) $_GET['sort_dir']);
-if($strSearchDir != 'asc') $strSearchDir = 'desc';
+if($strSearchDir != 'desc') $strSearchDir = 'asc';
 
 // Check for a valid block type ID
 $htmError = FALSE;

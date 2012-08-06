@@ -57,7 +57,7 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->g
 			
 			<div class="span4">
 				<input type="hidden" name="sort_by" value="page_name">
-				<input type="hidden" name="sort_dir" value="desc">
+				<input type="hidden" name="sort_dir" value="asc">
 				<input type="hidden" name="ccm_paging_p" value="1">
 				
 				<?php echo $interface->submit(t('Search'), 'wimb', 'left', 'secondary'); ?>
