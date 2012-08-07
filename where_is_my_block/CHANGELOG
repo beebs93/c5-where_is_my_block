@@ -22,3 +22,4 @@
 0.9.0.7 - August 2012
 - Changed default sorting setting
 - Added pagination info below table to indicate which set of results are being viewed
+- Optimized usage of page list requests

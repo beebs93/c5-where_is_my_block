@@ -41,8 +41,19 @@ if($htmError){
 
 // Generate list of page IDs that contain the block type we are searching for
 // NOTE: If there is a more elegant way to do this I am all ears
+$objHome = Page::getByID(HOME_CID);
+$strHomePath = (string) $objHome->getCollectionPath();
+
+$objPl = new PageList();
+$objPl->filterByPath($strHomePath, TRUE);
+$objPl->ignoreAliases();
+$arrAllowedPages = (array) $objPl->get();
+
+$objPerm = new Permissions($objHome);
+if($objPerm->canRead()) array_unshift($arrAllowedPages, $objHome);
+
 $arrPageIds = array();
-foreach($objController->arrAllowedPageObjs as $objPage){
+foreach($arrAllowedPages as $objPage){
 	if((!is_object($objPage)) || !$objPage instanceof Page || $objPage->error) continue;
 	
 	$intPageId = $objPage->getCollectionID();
