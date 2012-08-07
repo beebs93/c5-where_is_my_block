@@ -127,6 +127,7 @@ if(count($arrPageIds) > 0){
 	
 	// Re-index array keys
 	$arrPageBlockInfo = array_values($arrPageBlockInfo);
+	$intCurrentRows = count($arrPageBlockInfo);
 	
 	// If the results are paginated we get the pagination HTML and slice our custom results array
 	// to reflect the current offset and items per page parameter
@@ -136,16 +137,20 @@ if(count($arrPageIds) > 0){
 		$arrPageBlockInfo = array_slice($arrPageBlockInfo, $objPgn->result_offset, $objPgn->page_size);
 		
 		$htmPgn = (string) $objPl->displayPagingV2(FALSE, TRUE);
+		$strPgnInfo = t('Viewing ' . $objPgn->result_lower . ' to ' . $objPgn->result_upper . ' (' . $objPgn->result_count . ' Total)');
 	}else{
-		$htmPgn = '';	
+		$htmPgn = '';
+		$strPgnInfo = t('Viewing 1 to ' . $intCurrentRows . ' (' . $intCurrentRows . ' Total)');
 	}
 
 	$objResp = new stdClass();
 	$objResp->status = 'success';
 	$objResp->alert = '';
 	$objResp->message = '';
-	$objResp->response = $arrPageBlockInfo;
-	$objResp->pagination = $htmPgn;
+	$objResp->response = new stdClass();
+	$objResp->response->tblData = $arrPageBlockInfo;
+	$objResp->response->pgnHtml = $htmPgn;
+	$objResp->response->pgnInfo = $strPgnInfo;
 	
 	header('Content-type: application/json');
 	echo $objJh->encode($objResp);

@@ -37,10 +37,9 @@ $(document).ready(function(){
 		$loader.show();
 		$overlay.show();
 		
-		// Clear any previous alerts, messages, result tables and pagination
+		// Clear any previous alerts/messages
 		$('div#ccm-dashboard-result-message').remove();
-		$ccmBody.find('.responseText').remove();		
-		$ccmFooter.find('div.ccm-pagination').remove();
+		$ccmBody.find('.responseText').remove();
 		
 		// Get the form input values
 		oQueryVars.btid = $btidSelect.find(':selected').val();
@@ -74,16 +73,20 @@ $(document).ready(function(){
 	function handleResponse(oData){
 		var oData = oData || {};
 		
-		// Remove any previous results
+		// Remove any previous results and pagination
 		$ccmBody.find('table.ccm-results-list').remove();
+		$ccmBody.find('div.ccm-paging-top').remove();
+		$ccmFooter.find('div.ccm-pagination').remove();
 		
 		// Success
-		if(oData.status === 'success' && oData.response && oData.response instanceof Array && oData.response.length > 0){
+		if((oData.status === 'success' && oData.response) && oData.response.tblData && oData.response.tblData instanceof Array && oData.response.tblData.length > 0){
+			var aTblData = oData.response.tblData;
+			
 			var sTable = '<table border="0" cellspacing="0" cellpadding="0" id="ccm-where-is-my-block" class="ccm-results-list">';
 			sTable += '<thead><tr>'
 			
 			// Build table headings (use JS equivalent of concrete5 unhandle() text helper method)
-			for(var sHeading in oData.response[0]){
+			for(var sHeading in aTblData[0]){
 				var sHeadClass = $sortInput.val() == sHeading ? 'ccm-results-list-active-sort-' + $dirInput.val() : '',
 					aHeadText = sHeading.toString().replace(/_/g, ' ').replace(/-/g, ' ').replace(/\//g, ' ').split(' '),
 					sHeadText = '';
@@ -99,8 +102,8 @@ $(document).ready(function(){
 			sTable += '</tr></thead><tbody>';
 			
 			// Build result rows
-			for(var i = 0, ii = oData.response.length; i < ii; i++){
-				var oRow = oData.response[i],
+			for(var i = 0, ii = aTblData.length; i < ii; i++){
+				var oRow = aTblData[i],
 					sRowClass = i % 2 !== 0 ? ' ccm-list-record-alt' : '';
 
 				sTable += '<tr class="ccm-list-record' + sRowClass + '">';
@@ -121,9 +124,13 @@ $(document).ready(function(){
 			sTable += '</tbody></table>';
 			
 			// Add results and pagination to pane body
-			var $table = $(sTable);
-			$ccmBody.prepend($table);
-			if(oData.pagination && oData.pagination.length > 0) $ccmFooter.prepend(oData.pagination);
+			var sPgnInfo = oData.response.pgnInfo;
+				sPgn = oData.response.pgnHtml;
+			
+			if(sPgnInfo && sPgnInfo.length > 0) sTable += '<div class="ccm-paging-top">' + sPgnInfo + '</div>';
+			if(sPgn && sPgn.length > 0) $ccmFooter.prepend(sPgn);
+			
+			$ccmBody.prepend(sTable);
 		// Failure
 		}else{
 			var $alert,

@@ -32,6 +32,13 @@ table#ccm-where-is-my-block tr.ccm-list-record a{
 	display:block;
 }
 
+div.ccm-paging-top{
+	width:100%;
+	margin:0 0 15px;
+	clear:both;
+	float:left;
+}
+
 div#bodyOverlay{
 	width:100%;
 	height:100%;
