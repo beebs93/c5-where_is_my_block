@@ -23,7 +23,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		
 		// Get a list of all installed block types and extract the pertinent
 		// information from each block type object that we can search for
-		$arrAllBlockTypes = BlockTypeList::getInstalledList();
+		$arrAllBlockTypes = (array) BlockTypeList::getInstalledList();
 		
 		foreach($arrAllBlockTypes as $objBt){
 			// Skip any internal block types (e.g. Dashboard blocks)
@@ -32,25 +32,15 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 			$arrBtInfo = array(
 				'id' => (int) $objBt->btID,
 				'handle' => (string) $objBt->btHandle,
-				'packageId' => (int) $objBt->pkgID,
 				'name' => (string) $objBt->btName,
-				'description' => (string) $objBt->btDescription,
 				'category' => $objBt->isCoreBlockType() ? 'core' : 'third_party'
 			);
 			
 			$this->arrBlockTypes[$arrBtInfo['id']] = $arrBtInfo;
-			
-			// Add block type ID to list of allowed IDs
 			$this->arrAllowedBtIds[$arrBtInfo['id']] = TRUE;
 		}
 		
 		// Sort the array by category then by handle
-		// We skip checking for a filled array since concrete5
-		// should always have at least the core blocks installed.
-		// Should someone manually remove ALL the block types in their
-		// c5 install then obviously that will break this addon, but in
-		// that situation I have a sinking feeling this addon will be
-		// the least of their problems...
 		usort($this->arrBlockTypes, create_function('$a, $b', '
 			if($a["category"] == $b["category"]){
 				return strnatcmp($a["handle"], $b["handle"]);
@@ -58,7 +48,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 			return strnatcmp($a["category"], $b["category"]);
 		'));
 		
-		// Set the list of all the page IDs the current user can view		
+		// Set the list of all the Page objects the current user can view		
 		Loader::model('page_list');
 		
 		$objHome = Page::getByID(HOME_CID);
@@ -75,7 +65,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 			if($objPerm->canRead()) $this->arrAllowedPageObjs[] = $objPage;	
 		}
 		
-		// Prepend home page ID
+		// Prepend home Page object
 		array_unshift($this->arrAllowedPageObjs, $objHome);
 	}
 	
