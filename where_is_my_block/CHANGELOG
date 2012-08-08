@@ -1,26 +1,2 @@
 0.9.0 - July 2012
-- Initial beta version (before PRB approval)
-
-0.9.0.1 - August 2012
-- Minor update to CSS
-
-0.9.0.2 - August 2012
-- Temporarily disabled checking page permissions due to bug
-
-0.9.0.3 - August 2012
-- Fixed permissions bug
-
-0.9.0.4 - August 2012
-- Fixed pagination issues
-
-0.9.0.5 - August 2012
-- Improved pagination links functionality
-
-0.9.0.6 - August 2012
-- Fixes some issues for PRB submission
-
-0.9.0.7 - August 2012
-- Changed default sorting setting
-- Added pagination info below table to indicate which set of results are being viewed
-- Optimized usage of page list requests
-- Optimized tool script
+- Initial beta version
