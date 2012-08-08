@@ -39,8 +39,7 @@ if($htmError){
 	exit;
 }
 
-// Generate list of page IDs that contain the block type we are searching for
-// NOTE: If there is a more elegant way to do this I am all ears
+// Get a list of all non-system, non-aliased pages viewable by the current user
 $objHome = Page::getByID(HOME_CID);
 $strHomePath = (string) $objHome->getCollectionPath();
 
@@ -52,121 +51,41 @@ $arrAllowedPages = (array) $objPl->get();
 $objPerm = new Permissions($objHome);
 if($objPerm->canRead()) array_unshift($arrAllowedPages, $objHome);
 
+// For any page that has at least one of the block type we are searching for, get
+// the page name, path and total number of instances while also recording the page ID
+$arrPageBlockInfo = array();
 $arrPageIds = array();
 foreach($arrAllowedPages as $objPage){
 	if((!is_object($objPage)) || !$objPage instanceof Page || $objPage->error) continue;
 	
 	$intPageId = $objPage->getCollectionID();
+	$strName = $objPage->getCollectionName();
+	$strPath = trim($objPage->getCollectionPath());
+	if(strlen($strPath) == 0) $strPath = '/';
 	
 	$arrPageBlocks = (array) $objPage->getBlocks(FALSE);
 	
 	foreach($arrPageBlocks as $objBlock){
 		if((!$objBlock instanceof Block) || $objBlock->btID != $intSearchBtId) continue;
 		
-		$arrPageIds[] = $intPageId;
+		if(is_array($arrPageBlockInfo[$strPath])){
+			$arrPageBlockInfo[$strPath]['instances']++;
+
+			continue;
+		}
+
+		$arrPageBlockInfo[$strPath] = array(
+			'page_name' => $strName,
+			'page_path' => $strPath,
+			'instances' => 1
+		);
 		
-		break;
+		$arrPageIds[] = $intPageId;
 	}
 }
 
-// If there are any instances of the block type in the pages
-// from the first PageList request
-if(count($arrPageIds) > 0){
-	// Convert the list of page IDs into a query string for the next PageList request
-	$strFilter = '(p1.cID IN(' . implode(',', $arrPageIds) . '))';
-
-	// Get a paginated list of pages with the block type we are searching for			
-	$objPl = new PageList();
-	$objPl->filter(FALSE, $strFilter);
-	$objPl->setItemsPerPage($intSearchIpp);				
-	if($strSearchSort == 'page_name') $objPl->sortBy('cvName', $strSearchDir);
-	
-	// Clone PageList so we can get entire non-paginated result set
-	$objPlClone = clone $objPl;
-	
-	// Get paginated results
-	$arrPages = (array) $objPl->getPage();	
-	// Get non-paginated results (to allow for accurate custom sorting)
-	$arrAllPages = (array) $objPlClone->get();
-
-	// Get the page name, path and number of instances for the block type on each page
-	// we received from the first PageList request
-	$arrPageBlockInfo = array();
-	foreach($arrAllPages as $objPage){
-		if((!$objPage instanceof Page) || $objPage->error) continue;
-
-		$strName = $objPage->getCollectionName();
-		$strPath = trim($objPage->getCollectionPath());
-		if(strlen($strPath) == 0) $strPath = '/';
-
-		$arrPageBlocks = (array) $objPage->getBlocks(FALSE);
-
-		foreach($arrPageBlocks as $objBlock){
-			if((!$objBlock instanceof Block) || $objBlock->btID != $intSearchBtId) continue;
-
-			if(is_array($arrPageBlockInfo[$strPath])){
-				$arrPageBlockInfo[$strPath]['instances']++;
-
-				continue;
-			}
-
-			$arrPageBlockInfo[$strPath] = array(
-				'page_name' => $strName,
-				'page_path' => $strPath,
-				'instances' => 1
-			);
-		}
-	}	
-	
-	// Sort by instances (if requested)
-	if($strSearchSort == 'instances'){
-		$strOperator = $strSearchDir == 'asc' ? '>' : '<';
-		
-		usort($arrPageBlockInfo, create_function('$a, $b', '
-			return $a["instances"] ' . $strOperator . ' $b["instances"];
-		'));
-	// Sort by path (if requested)
-	}elseif($strSearchSort == 'page_path'){
-		$strFirst = $strSearchDir == 'asc' ? '$a' : '$b';
-		$strSecond = $strFirst == '$a' ? '$b' : '$a';
-		
-		usort($arrPageBlockInfo, create_function('$a, $b', '
-			$strRgx = "/[^a-zA-Z0-9]/";
-			return strnatcmp(preg_replace($strRgx, "", ' . $strFirst . '["page_path"]), preg_replace($strRgx, "", ' . $strSecond . '["page_path"]));
-		'));
-	}
-	
-	// Re-index array keys
-	$arrPageBlockInfo = array_values($arrPageBlockInfo);
-	$intCurrentRows = count($arrPageBlockInfo);
-	
-	// If the results are paginated we get the pagination HTML and slice our custom results array
-	// to reflect the current offset and items per page parameter
-	if($objPl->getSummary()->pages > 1){
-		$objPgn = $objPl->getPagination();
-		
-		$arrPageBlockInfo = array_slice($arrPageBlockInfo, $objPgn->result_offset, $objPgn->page_size);
-		
-		$htmPgn = (string) $objPl->displayPagingV2(FALSE, TRUE);
-		$strPgnInfo = t('Viewing ' . $objPgn->result_lower . ' to ' . $objPgn->result_upper . ' (' . $objPgn->result_count . ' Total)');
-	}else{
-		$htmPgn = '';
-		$strPgnInfo = t('Viewing 1 to ' . $intCurrentRows . ' (' . $intCurrentRows . ' Total)');
-	}
-
-	$objResp = new stdClass();
-	$objResp->status = 'success';
-	$objResp->alert = '';
-	$objResp->message = '';
-	$objResp->response = new stdClass();
-	$objResp->response->tblData = $arrPageBlockInfo;
-	$objResp->response->pgnHtml = $htmPgn;
-	$objResp->response->pgnInfo = $strPgnInfo;
-	
-	header('Content-type: application/json');
-	echo $objJh->encode($objResp);
-	exit;
-}else{
+// Return error message if no pages found that contain the specific block type
+if(count($arrPageIds) == 0){
 	$objResp = new stdClass();
 	$objResp->status = 'error';
 	$objResp->alert = '';
@@ -176,3 +95,75 @@ if(count($arrPageIds) > 0){
 	echo $objJh->encode($objResp);
 	exit;
 }
+
+// Convert the list of page IDs into a query string
+$strFilter = '(p1.cID IN(' . implode(',', $arrPageIds) . '))';
+
+// Get a paginated list of pages using the page IDs from the first PageList request
+// so we can use its built-in paginator to easily extract any pagination information
+$objPl = new PageList();
+$objPl->filter(FALSE, $strFilter);
+$objPl->setItemsPerPage($intSearchIpp);	
+$arrPages = (array) $objPl->getPage();
+
+// Apply sorting
+switch($strSearchSort){
+	case 'page_name':
+		$strFirst = $strSearchDir == 'asc' ? '$a' : '$b';
+		$strSecond = $strFirst == '$a' ? '$b' : '$a';
+		
+		usort($arrPageBlockInfo, create_function('$a, $b', '
+			return strnatcmp(strtolower(' . $strFirst . '["page_name"]), strtolower(' . $strSecond . '["page_name"]));
+		'));		
+	break;
+	
+	case 'page_path':
+		$strFirst = $strSearchDir == 'asc' ? '$a' : '$b';
+		$strSecond = $strFirst == '$a' ? '$b' : '$a';
+		
+		usort($arrPageBlockInfo, create_function('$a, $b', '
+			$strRgx = "/[^a-zA-Z0-9]/";
+			return strnatcmp(preg_replace($strRgx, "", ' . $strFirst . '["page_path"]), preg_replace($strRgx, "", ' . $strSecond . '["page_path"]));
+		'));		
+	break;
+	
+	case 'instances':
+		$strOperator = $strSearchDir == 'asc' ? '>' : '<';
+		
+		usort($arrPageBlockInfo, create_function('$a, $b', '
+			return $a["instances"] ' . $strOperator . ' $b["instances"];
+		'));		
+	break;
+}
+
+// Re-index array keys
+$arrPageBlockInfo = array_values($arrPageBlockInfo);
+
+// If the results are paginated we get the pagination HTML and slice our custom results array
+// to reflect the current offset and items per page parameter
+if($objPl->getSummary()->pages > 1){
+	$objPgn = $objPl->getPagination();
+	
+	$arrPageBlockInfo = array_slice($arrPageBlockInfo, $objPgn->result_offset, $objPgn->page_size);
+	
+	$htmPgn = (string) $objPl->displayPagingV2(FALSE, TRUE);
+	$strPgnInfo = t('Viewing ' . $objPgn->result_lower . ' to ' . $objPgn->result_upper . ' (' . $objPgn->result_count . ' Total)');
+}else{
+	$intCurrentRows = count($arrPageBlockInfo);
+	
+	$htmPgn = '';
+	$strPgnInfo = t('Viewing 1 to ' . $intCurrentRows . ' (' . $intCurrentRows . ' Total)');
+}
+
+$objResp = new stdClass();
+$objResp->status = 'success';
+$objResp->alert = '';
+$objResp->message = '';
+$objResp->response = new stdClass();
+$objResp->response->tblData = $arrPageBlockInfo;
+$objResp->response->pgnHtml = $htmPgn;
+$objResp->response->pgnInfo = $strPgnInfo;
+
+header('Content-type: application/json');
+echo $objJh->encode($objResp);
+exit;
