@@ -29,7 +29,7 @@ class WhereIsMyBlockPackage extends Package{
 	 * @since July 12, 2012
 	 */	
 	public function getPackageName(){
-		// It took a LOT of willpower not to name this "Dude, where's my block?"
+		// It took a LOT of willpower not to name this "Duuuude, where's my block?"
 		return t('Where Is My Block?');
 	}
 	

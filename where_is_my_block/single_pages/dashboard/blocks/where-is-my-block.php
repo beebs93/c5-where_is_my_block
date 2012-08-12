@@ -19,7 +19,7 @@ if(!$objPerm->canRead()){
 
 // Generate option elements for block type select menu
 $htmBtOpts = '<option value="">' . t('Choose a block type') . '</option>';
-	
+
 foreach($arrBlockTypes as $keyI => $arrBt){
 	if(($keyI === 0) || $arrBlockTypes[($keyI - 1)]['category'] != $arrBt['category']){
 		$strOptGroup = $objTh->specialchars(ucwords($arrBt['category']));
@@ -29,7 +29,7 @@ foreach($arrBlockTypes as $keyI => $arrBt){
 		$htmBtOpts .= '<optgroup label="' . t($objTh->unhandle($strOptGroup)) . ' Blocks">';
 	}
 	
-	$htmBtOpts .= '<option value="' . $arrBt['id'] . '">' . t($objTh->specialchars($arrBt['name'])) . '</option>';
+	$htmBtOpts .= '<option value="' . $arrBt['id'] . '">' . $objTh->specialchars(t($arrBt['name'])) . '</option>';
 }
 
 // Generate option elements for items per page select menu 
@@ -69,16 +69,39 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->g
 <!-- .ccm-pane-options --></div>
 
 <div class="ccm-pane-body">
-	<span class="help-block"><?php echo t('Some pages may be omitted due to your current viewing permissions.'); ?></span>
+	<table cellspacing="0" cellpadding="0" border="0" class="ccm-results-list" id="ccm-where-is-my-block">
+		<thead>
+			<tr>
+				<th>Page Name</th>
+				<th>Page Path</th>
+				<th>Instances</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="ccm-list-record">
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<hr />
+	
+	<span class="help-block"><?php echo t('Some pages/blocks may be omitted due to your current viewing permissions.'); ?></span>
 	<span class="help-block"><?php echo t('System pages (e.g. <em>Login, Error 404, dashboard pages, etc.</em>) are not searched.'); ?></span>
 	
-	<?php echo $htmHelpLinks;?>
-    
-    <div id="bodyOverlay"></div>
+	<?php echo $htmHelpLinks; ?>
+	
 <!-- .ccm-pane-body --></div>
 	
 <div class="ccm-pane-footer"></div>
 
+<script type="text/javascript">
+jQuery(document).ready(function($){
+	var oWimbForm = new Wimb.SearchForm();
+});
+</script>
 
 <?php
 // End pane

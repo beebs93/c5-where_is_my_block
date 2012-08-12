@@ -1,2 +1,8 @@
 0.9.0 - July 2012
 - Initial beta version
+
+0.9.0.1 - August 2012
+- Added checking block viewing permissions
+- Changed default single page view
+- Removed semi-transparent overlay while searching to keep in style with other system pages
+- Minor bug fixes
