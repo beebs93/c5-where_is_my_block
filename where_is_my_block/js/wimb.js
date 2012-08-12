@@ -7,9 +7,10 @@
  * @since July 12, 2012
  */
 (function($){
-	
-$(document).ready(function(){
-	var $container = $('div.ccm-dashboard-page-container'),
+
+Wimb.SearchForm = function(){
+	var _this = this,
+		$container = $('div.ccm-dashboard-page-container'),
 		$ccmBody = $('div.ccm-pane-body'),
 		$overlay = $('div#bodyOverlay'),
 		$ccmFooter = $('div.ccm-pane-footer'),
@@ -22,8 +23,81 @@ $(document).ready(function(){
 		$dirInput = $form.find('input[name="sort_dir"]'),
 		$pagingInput = $form.find('input[name="ccm_paging_p"]'),
 		oQueryVars = {};
-	
-	
+
+
+	/**
+	 * Constructor
+	 *
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 * @since July 12, 2012
+	 */
+	this.init = function(){
+		// Interrupt the normal form submission so we can use our custom method
+		$form.on('submit', function(e){
+			_this.submitForm();
+			
+			return false;
+		});
+		
+		// Add listeners to each select element to auto-submit the form upon user interaction
+		$select.each(function(){
+			var $this = $(this);
+			
+			$this.on('change', function(e){
+				if($btidSelect.find(':selected').val().length > 0){
+					// Reset the paginated page counter
+					$pagingInput.val(1);
+					
+					_this.submitForm();
+				} 
+			});
+		});
+		
+		// Add listeners to any table heading links that will adjust the sorting inputs
+		// and re-submit the form
+		$ccmBody.on('click', 'table#ccm-where-is-my-block th a', function(e){
+			var sCurrentSort = $sortInput.val(),
+				sCurrentDir = $dirInput.val(),
+				sNewSort = $(this).get(0).getAttribute('data-sort'),
+				sNewDir = sCurrentDir == 'asc' ? 'desc' : 'asc';
+				
+			$sortInput.val(sNewSort);
+			
+			if(sCurrentSort == sNewSort) $dirInput.val(sNewDir);
+			
+			_this.submitForm();
+		});
+		
+		// Interrupt the normal pagination links to adjust the appropriate form inputs
+		// then auto-submit
+		$ccmFooter.on('click', 'div.ccm-pagination a', function(e){
+			var $this = $(this),
+				aMatch = /ccm_paging_p=(\d+)/.exec(this.href),
+				iPage;
+			
+			// Extract the page number or find the average if clicking on a '...' link
+			if((aMatch instanceof Array) && aMatch.length > 1){
+				iPage = parseInt(aMatch[1]);
+			}else if($this.text() == '...'){
+				var iPrev = parseInt($this.parent().prev().find('a:first-child').text()),
+					iNext = parseInt($this.parent().next().find('a:first-child').text());
+				
+				iPage = Math.floor((iPrev + iNext) / 2);
+			}else{
+				iPage = 1;
+			}
+			
+			$pagingInput.val(iPage);
+			
+			_this.submitForm();
+			
+			return false;
+		});
+	};
+
+
 	/**
 	 * Reads all the form inputs and constructs a GET query
 	 * string which is passed to our tools script via Ajax
@@ -33,9 +107,8 @@ $(document).ready(function(){
 	 * @author Brad Beebe
 	 * @since July 12, 2012
 	 */
-	function submitForm(){
+	this.submitForm = function(){
 		$loader.show();
-		$overlay.show();
 		
 		// Clear any previous alerts/messages
 		$('div#ccm-dashboard-result-message').remove();
@@ -55,10 +128,10 @@ $(document).ready(function(){
 		}
 		sQuery = sQuery.slice(0, sQuery.length - 1);
 		
-		$.get(WIMB_TOOLS_URL + sQuery, handleResponse, 'json');
+		$.get(WIMB_TOOLS_URL + sQuery, _this.handleResponse, 'json');
 	};
-	
-	
+
+
 	/**
 	 * Callback for the form submission Ajax call
 	 * Parses the JSON response and builds a results table (if successful)
@@ -70,10 +143,10 @@ $(document).ready(function(){
 	 * @author Brad Beebe
 	 * @since July 12, 2012
 	 */
-	function handleResponse(oData){
+	this.handleResponse = function(oData){
 		var oData = oData || {};
 		
-		// Remove any previous results and pagination
+		// Remove any previous dynamic elements
 		$ccmBody.find('table.ccm-results-list').remove();
 		$ccmBody.find('div.ccm-paging-top').remove();
 		$ccmFooter.find('div.ccm-pagination').remove();
@@ -150,72 +223,11 @@ $(document).ready(function(){
 		}
 		
 		$loader.hide();
-		$overlay.fadeTo(500, 0, function(){
-			$overlay.css('opacity', '').hide();	
-		});
 	};
-	
-	// Interrupt the normal form submission so we can use our custom method
-	$form.on('submit', function(e){
-		submitForm();
-		
-		return false;
-	});
-	
-	// Add listeners to each select element to auto-submit the form upon user interaction
-	$select.each(function(){
-		var $this = $(this);
-		
-		$this.on('change', function(e){
-			if($btidSelect.find(':selected').val().length > 0){
-				// Reset the paginated page counter
-				$pagingInput.val(1);
-				
-				submitForm();
-			} 
-		});
-	});
-	
-	// Add listeners to any table heading links that will adjust the sorting inputs
-	// and re-submit the form
-	$ccmBody.on('click', 'table#ccm-where-is-my-block th a', function(e){
-		var sCurrentSort = $sortInput.val(),
-			sCurrentDir = $dirInput.val(),
-			sNewSort = $(this).get(0).getAttribute('data-sort'),
-			sNewDir = sCurrentDir == 'asc' ? 'desc' : 'asc';
-			
-		$sortInput.val(sNewSort);
-		
-		if(sCurrentSort == sNewSort) $dirInput.val(sNewDir);
-		
-		submitForm();
-	});
-	
-	// Interrupt the normal pagination links to adjust the appropriate form inputs
-	// then auto-submit
-	$ccmFooter.on('click', 'div.ccm-pagination a', function(e){
-		var $this = $(this),
-			aMatch = /ccm_paging_p=(\d+)/.exec(this.href),
-			iPage;
-		
-		// Extract the page number or find the average if clicking on a '...' link
-		if((aMatch instanceof Array) && aMatch.length > 1){
-			iPage = parseInt(aMatch[1]);
-		}else if($this.text() == '...'){
-			var iPrev = parseInt($this.parent().prev().find('a:first-child').text()),
-				iNext = parseInt($this.parent().next().find('a:first-child').text());
-			
-			iPage = Math.floor((iPrev + iNext) / 2);
-		}else{
-			iPage = 1;
-		}
-		
-		$pagingInput.val(iPage);
-		
-		submitForm();
-		
-		return false;
-	});
-});
+
+
+	// Auto-run constructor
+	this.init();
+};
 
 })(jQuery);

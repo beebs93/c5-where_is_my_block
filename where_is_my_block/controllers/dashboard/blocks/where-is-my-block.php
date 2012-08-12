@@ -35,11 +35,13 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 				'category' => $objBt->isCoreBlockType() ? 'core' : 'third_party'
 			);
 			
-			$this->arrBlockTypes[$arrBtInfo['id']] = $arrBtInfo;
+			$this->arrBlockTypes[] = $arrBtInfo;
+			// Keep a separate array that records the valid block type IDs
+			// since running usort on arrays resets their keys
 			$this->arrAllowedBtIds[$arrBtInfo['id']] = TRUE;
 		}
 		
-		// Sort the array by category then by handle
+		// Sort by category then by handle
 		usort($this->arrBlockTypes, create_function('$a, $b', '
 			if($a["category"] == $b["category"]){
 				return strnatcmp($a["handle"], $b["handle"]);
@@ -80,7 +82,9 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		$objUh = Loader::helper('concrete/urls');
 		$objHh = Loader::helper('html');
 		
-		$strJs = 'var WIMB_TOOLS_URL = WIMB_TOOLS_URL || "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";';
+		$strJs = '
+		var WIMB_TOOLS_URL = WIMB_TOOLS_URL || "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";
+		var Wimb = Wimb || {};';
 		
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
 		$this->addHeaderItem('<script type="text/javascript">' . $strJs . '</script>');
@@ -102,6 +106,8 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @since July 12, 2012
 	 */	
 	public function getAlert($strMsg, $strSeverity = 'info'){
+		$strMsg = $this->helperObjects['text']->specialchars((string) $strMsg);
+		
 		$tmpAlert = '
 		<div class="ccm-ui" id="ccm-dashboard-result-message">
 			<div class="row">
@@ -111,7 +117,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 			</div>
 		</div>';
 		
-		return preg_replace('/[\r\n\t]/', '', sprintf($tmpAlert, (string) $strMsg, (string) $strSeverity));
+		return preg_replace('/[\r\n\t]/', '', sprintf($tmpAlert, $strMsg, (string) $strSeverity));
 	}	
 	
 	

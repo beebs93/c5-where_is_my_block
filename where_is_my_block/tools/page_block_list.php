@@ -68,6 +68,9 @@ foreach($arrAllowedPages as $objPage){
 	foreach($arrPageBlocks as $objBlock){
 		if((!$objBlock instanceof Block) || $objBlock->btID != $intSearchBtId) continue;
 		
+		$objBlkPerm = new Permissions($objBlock);
+		if(!$objBlkPerm->canRead()) continue;
+		
 		if(is_array($arrPageBlockInfo[$strPath])){
 			$arrPageBlockInfo[$strPath]['instances']++;
 
@@ -104,7 +107,7 @@ $strFilter = '(p1.cID IN(' . implode(',', $arrPageIds) . '))';
 $objPl = new PageList();
 $objPl->filter(FALSE, $strFilter);
 $objPl->setItemsPerPage($intSearchIpp);	
-$arrPages = (array) $objPl->getPage();
+(array) $objPl->getPage();
 
 // Apply sorting
 switch($strSearchSort){
