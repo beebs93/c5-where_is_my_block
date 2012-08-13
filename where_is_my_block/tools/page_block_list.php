@@ -4,6 +4,7 @@ defined('C5_EXECUTE') or die(_('Access Denied.'));
 Loader::model('page_list');
 $objJh = Loader::helper('json');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');
+$objUser = new User();
 
 // Extract search parameters
 $intSearchBtId = (int) $_GET['btid'];
@@ -16,6 +17,8 @@ if(!$objController->isValidSortableCol($strSearchSort)) $strSearchSort = 'page_n
 
 $strSearchDir = strtolower((string) $_GET['sort_dir']);
 if($strSearchDir != 'desc') $strSearchDir = 'asc';
+
+$blnRefresh = isset($_GET['refresh']) ? (bool) $_GET['refresh'] : FALSE;
 
 // Check for a valid block type ID
 $htmError = FALSE;
@@ -39,64 +42,79 @@ if($htmError){
 	exit;
 }
 
-// Get a list of all non-system, non-aliased pages viewable by the current user
-$objHome = Page::getByID(HOME_CID);
-$strHomePath = (string) $objHome->getCollectionPath();
+// Check for cached data
+if((!defined('ENABLE_CACHE')) || !ENABLE_CACHE) Cache::enableCache();
+$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', 'pageBlockInfo_' . $objUser->uID, FALSE, TRUE)) ? $cachePgBlkInfo : array();
+$arrPageIds = ($cachePageIds = Cache::get('wimb', 'pageIds_' . $objUser->uID, FALSE)) ? $cachePageIds : array();
+if((!defined('ENABLE_CACHE')) || !ENABLE_CACHE) Cache::disableCache();
 
-$objPl = new PageList();
-$objPl->filterByPath($strHomePath, TRUE);
-$objPl->ignoreAliases();
-$arrAllowedPages = (array) $objPl->get();
+// Refresh cache if needed
+if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === TRUE){
+	// Get a list of all non-system, non-aliased pages viewable by the current user
+	$objHome = Page::getByID(HOME_CID);
+	$strHomePath = (string) $objHome->getCollectionPath();
 
-$objPerm = new Permissions($objHome);
-if($objPerm->canRead()) array_unshift($arrAllowedPages, $objHome);
+	$objPl = new PageList();
+	$objPl->filterByPath($strHomePath, TRUE);
+	$objPl->ignoreAliases();
+	$arrAllowedPages = (array) $objPl->get();
 
-// For any page that has at least one of the block type we are searching for, get
-// the page name, path and total number of instances while also recording the page ID
-$arrPageBlockInfo = array();
-$arrPageIds = array();
-foreach($arrAllowedPages as $objPage){
-	if((!is_object($objPage)) || !$objPage instanceof Page || $objPage->error) continue;
-	
-	$intPageId = $objPage->getCollectionID();
-	$strName = $objPage->getCollectionName();
-	$strPath = trim($objPage->getCollectionPath());
-	if(strlen($strPath) == 0) $strPath = '/';
-	
-	$arrPageBlocks = (array) $objPage->getBlocks(FALSE);
-	
-	foreach($arrPageBlocks as $objBlock){
-		if((!$objBlock instanceof Block) || $objBlock->btID != $intSearchBtId) continue;
+	$objPerm = new Permissions($objHome);
+	if($objPerm->canRead()) array_unshift($arrAllowedPages, $objHome);
+
+	// For any page that has at least one of the block type we are searching for, get
+	// the page name, path and total number of instances while also recording the page ID
+	$arrPageBlockInfo = array();
+	$arrPageIds = array();
+	foreach($arrAllowedPages as $objPage){
+		if((!is_object($objPage)) || !$objPage instanceof Page || $objPage->error) continue;
 		
-		$objBlkPerm = new Permissions($objBlock);
-		if(!$objBlkPerm->canRead()) continue;
+		$intPageId = $objPage->getCollectionID();
+		$strName = $objPage->getCollectionName();
+		$strPath = trim($objPage->getCollectionPath());
+		if(strlen($strPath) == 0) $strPath = '/';
 		
-		if(is_array($arrPageBlockInfo[$strPath])){
-			$arrPageBlockInfo[$strPath]['instances']++;
+		$arrPageBlocks = (array) $objPage->getBlocks(FALSE);
+		
+		foreach($arrPageBlocks as $objBlock){
+			if((!$objBlock instanceof Block) || $objBlock->btID != $intSearchBtId) continue;
+			
+			$objBlkPerm = new Permissions($objBlock);
+			if(!$objBlkPerm->canRead()) continue;
+			
+			if(is_array($arrPageBlockInfo[$strPath])){
+				$arrPageBlockInfo[$strPath]['instances']++;
 
-			continue;
+				continue;
+			}
+
+			$arrPageBlockInfo[$strPath] = array(
+				'page_name' => $strName,
+				'page_path' => $strPath,
+				'instances' => 1
+			);
+			
+			$arrPageIds[] = $intPageId;
 		}
-
-		$arrPageBlockInfo[$strPath] = array(
-			'page_name' => $strName,
-			'page_path' => $strPath,
-			'instances' => 1
-		);
-		
-		$arrPageIds[] = $intPageId;
 	}
-}
 
-// Return error message if no pages found that contain the specific block type
-if(count($arrPageIds) == 0){
-	$objResp = new stdClass();
-	$objResp->status = 'error';
-	$objResp->alert = '';
-	$objResp->message = t('No pages contain that block type');
-	
-	header('Content-type: application/json');
-	echo $objJh->encode($objResp);
-	exit;
+	// Return error message if no pages found that contain the specific block type
+	if(count($arrPageIds) == 0){
+		$objResp = new stdClass();
+		$objResp->status = 'error';
+		$objResp->alert = '';
+		$objResp->message = t('No pages contain that block type');
+		
+		header('Content-type: application/json');
+		echo $objJh->encode($objResp);
+		exit;
+	}
+
+	// Cache the results for future sorting/pagination
+	if((!defined('ENABLE_CACHE')) || !ENABLE_CACHE) Cache::enableCache();
+	Cache::set('wimb', 'pageBlockInfo_' . $objUser->uID, $arrPageBlockInfo, (time() + 600));
+	Cache::set('wimb', 'pageIds_' . $objUser->uID, $arrPageIds, (time() + 600));	
+	if((!defined('ENABLE_CACHE')) || !ENABLE_CACHE) Cache::disableCache();
 }
 
 // Convert the list of page IDs into a query string
@@ -138,9 +156,6 @@ switch($strSearchSort){
 		'));		
 	break;
 }
-
-// Re-index array keys
-$arrPageBlockInfo = array_values($arrPageBlockInfo);
 
 // If the results are paginated we get the pagination HTML and slice our custom results array
 // to reflect the current offset and items per page parameter
