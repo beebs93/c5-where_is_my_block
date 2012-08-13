@@ -22,6 +22,7 @@ Wimb.SearchForm = function(){
 		$sortInput = $form.find('input[name="sort_by"]'),
 		$dirInput = $form.find('input[name="sort_dir"]'),
 		$pagingInput = $form.find('input[name="ccm_paging_p"]'),
+		$refreshInput = $form.find('input[name="refresh"]'),
 		oQueryVars = {};
 
 
@@ -36,6 +37,8 @@ Wimb.SearchForm = function(){
 	this.init = function(){
 		// Interrupt the normal form submission so we can use our custom method
 		$form.on('submit', function(e){
+			$refreshInput.val(1);
+
 			_this.submitForm();
 			
 			return false;
@@ -47,9 +50,12 @@ Wimb.SearchForm = function(){
 			
 			$this.on('change', function(e){
 				if($btidSelect.find(':selected').val().length > 0){
+					var iRefresh = $(this).is($btidSelect) ? 1 : 0;
+					$refreshInput.val(iRefresh);
+
 					// Reset the paginated page counter
 					$pagingInput.val(1);
-					
+
 					_this.submitForm();
 				} 
 			});
@@ -67,11 +73,13 @@ Wimb.SearchForm = function(){
 			
 			if(sCurrentSort == sNewSort) $dirInput.val(sNewDir);
 			
+			$refreshInput.val(0);
+
 			_this.submitForm();
 		});
 		
 		// Interrupt the normal pagination links to adjust the appropriate form inputs
-		// then auto-submit
+		// then submit
 		$ccmFooter.on('click', 'div.ccm-pagination a', function(e){
 			var $this = $(this),
 				aMatch = /ccm_paging_p=(\d+)/.exec(this.href),
@@ -91,6 +99,8 @@ Wimb.SearchForm = function(){
 			
 			$pagingInput.val(iPage);
 			
+			$refreshInput.val(0);
+
 			_this.submitForm();
 			
 			return false;
@@ -120,6 +130,7 @@ Wimb.SearchForm = function(){
 		oQueryVars.sort_by = $sortInput.val();
 		oQueryVars.sort_dir = $dirInput.val();
 		oQueryVars.ccm_paging_p = $pagingInput.val();
+		oQueryVars.refresh = $refreshInput.val();
 		
 		// Build GET query and send Ajax request to tool script
 		var sQuery = '?';
@@ -129,6 +140,8 @@ Wimb.SearchForm = function(){
 		sQuery = sQuery.slice(0, sQuery.length - 1);
 		
 		$.get(WIMB_TOOLS_URL + sQuery, _this.handleResponse, 'json');
+
+		//console.log(sQuery);
 	};
 
 
