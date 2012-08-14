@@ -6,6 +6,7 @@ $objJh = Loader::helper('json');
 $objVh = Loader::helper('validation/token');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');
 $objUser = new User();
+$blnCacheEnabled = (!defined('ENABLE_CACHE')) || !ENABLE_CACHE;
 
 // Check form token
 if(!$objVh->validate('wimb_page_block_search')){
@@ -56,10 +57,10 @@ if($htmError){
 }
 
 // Check for cached data
-if((!defined('ENABLE_CACHE')) || !ENABLE_CACHE) Cache::enableCache();
+if(!$blnCacheEnabled) Cache::enableCache();
 $arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', 'pageBlockInfo_' . $objUser->uID, FALSE, TRUE)) ? $cachePgBlkInfo : array();
 $arrPageIds = ($cachePageIds = Cache::get('wimb', 'pageIds_' . $objUser->uID, FALSE)) ? $cachePageIds : array();
-if((!defined('ENABLE_CACHE')) || !ENABLE_CACHE) Cache::disableCache();
+if(!$blnCacheEnabled) Cache::disableCache();
 
 // Refresh cache if needed
 if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === TRUE){
@@ -124,10 +125,10 @@ if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === T
 	}
 
 	// Cache the results for future sorting/pagination
-	if((!defined('ENABLE_CACHE')) || !ENABLE_CACHE) Cache::enableCache();
+	if(!$blnCacheEnabled) Cache::enableCache();
 	Cache::set('wimb', 'pageBlockInfo_' . $objUser->uID, $arrPageBlockInfo, (time() + 600));
 	Cache::set('wimb', 'pageIds_' . $objUser->uID, $arrPageIds, (time() + 600));	
-	if((!defined('ENABLE_CACHE')) || !ENABLE_CACHE) Cache::disableCache();
+	if(!$blnCacheEnabled) Cache::disableCache();
 }
 
 // Convert the list of page IDs into a query string
