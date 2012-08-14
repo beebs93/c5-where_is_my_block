@@ -56,6 +56,9 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->g
 			</div>
 			
 			<div class="span4">
+
+				<?php $this->controller->token->output('wimb_page_block_search'); ?>
+
 				<input type="hidden" name="sort_by" value="page_name" />
 				<input type="hidden" name="sort_dir" value="asc" />
 				<input type="hidden" name="ccm_paging_p" value="1" />
@@ -100,7 +103,7 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->g
 
 <script type="text/javascript">
 jQuery(document).ready(function($){
-	var oWimbForm = new Wimb.SearchForm();
+	var oWimbForm = new WIMB.SearchForm();
 });
 </script>
 

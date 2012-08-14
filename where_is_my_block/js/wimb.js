@@ -8,7 +8,7 @@
  */
 (function($){
 
-Wimb.SearchForm = function(){
+WIMB.SearchForm = function(){
 	var _this = this,
 		$container = $('div.ccm-dashboard-page-container'),
 		$ccmBody = $('div.ccm-pane-body'),
@@ -23,6 +23,7 @@ Wimb.SearchForm = function(){
 		$dirInput = $form.find('input[name="sort_dir"]'),
 		$pagingInput = $form.find('input[name="ccm_paging_p"]'),
 		$refreshInput = $form.find('input[name="refresh"]'),
+		$tokenInput = $form.find('input[name="ccm_token"]'),
 		oQueryVars = {};
 
 
@@ -131,6 +132,7 @@ Wimb.SearchForm = function(){
 		oQueryVars.sort_dir = $dirInput.val();
 		oQueryVars.ccm_paging_p = $pagingInput.val();
 		oQueryVars.refresh = $refreshInput.val();
+		oQueryVars.ccm_token = $tokenInput.val();
 		
 		// Build GET query and send Ajax request to tool script
 		var sQuery = '?';
@@ -139,7 +141,7 @@ Wimb.SearchForm = function(){
 		}
 		sQuery = sQuery.slice(0, sQuery.length - 1);
 		
-		$.get(WIMB_TOOLS_URL + sQuery, _this.handleResponse, 'json');
+		$.get(WIMB.URL_TOOL_PAGE_BLOCK_SEACH + sQuery, _this.handleResponse, 'json');
 
 		//console.log(sQuery);
 	};
