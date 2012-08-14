@@ -3,8 +3,21 @@ defined('C5_EXECUTE') or die(_('Access Denied.'));
 
 Loader::model('page_list');
 $objJh = Loader::helper('json');
+$objVh = Loader::helper('validation/token');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');
 $objUser = new User();
+
+// Check form token
+if(!$objVh->validate('wimb_page_block_search')){
+	$objResp = new stdClass();
+	$objResp->status = 'error';
+	$objResp->alert = $objController->getAlert($objVh->getErrorMessage(), 'error');
+	$objResp->message = t('There was an error with your request');
+	
+	header('Content-type: application/json');
+	echo $objJh->encode($objResp);
+	exit;
+}
 
 // Extract search parameters
 $intSearchBtId = (int) $_GET['btid'];
@@ -175,8 +188,6 @@ if($objPl->getSummary()->pages > 1){
 
 $objResp = new stdClass();
 $objResp->status = 'success';
-$objResp->alert = '';
-$objResp->message = '';
 $objResp->response = new stdClass();
 $objResp->response->tblData = $arrPageBlockInfo;
 $objResp->response->pgnHtml = $htmPgn;

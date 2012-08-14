@@ -83,8 +83,9 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		$objHh = Loader::helper('html');
 		
 		$strJs = '
-		var WIMB_TOOLS_URL = WIMB_TOOLS_URL || "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";
-		var Wimb = Wimb || {};';
+		var WIMB = WIMB || {};
+		WIMB.URL_TOOL_PAGE_BLOCK_SEACH = "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";
+		';
 		
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
 		$this->addHeaderItem('<script type="text/javascript">' . $strJs . '</script>');
