@@ -141,7 +141,7 @@ WIMB.SearchForm = function(){
 		}
 		sQuery = sQuery.slice(0, sQuery.length - 1);
 		
-		$.get(WIMB.URL_TOOL_PAGE_BLOCK_SEACH + sQuery, _this.handleResponse, 'json');
+		$.get(WIMB.URL_TOOL_PAGE_BLOCK_SEARCH + sQuery, _this.handleResponse, 'json');
 
 		//console.log(sQuery);
 	};
