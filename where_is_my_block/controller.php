@@ -3,8 +3,8 @@ defined('C5_EXECUTE') or die(_('Access Denied.'));
 
 class WhereIsMyBlockPackage extends Package{
 	protected $pkgHandle = 'where_is_my_block';
-	protected $appVersionRequired = '5.4.2.2';
-	protected $pkgVersion = '0.9.0.3';
+	protected $appVersionRequired = '5.5.2.1';
+	protected $pkgVersion = '0.9.0.4';
 	
 	
 	/**
