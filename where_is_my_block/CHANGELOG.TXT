@@ -9,3 +9,6 @@
 
 0.9.0.2 - August 2012
 - Added caching of initial search results to speed up changes to sorting/pagination
+
+0.9.0.3 - August 2012
+- Minor formatting/performance tweaks
