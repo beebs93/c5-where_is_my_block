@@ -6,7 +6,7 @@ $objJh = Loader::helper('json');
 $objVh = Loader::helper('validation/token');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');
 $objUser = new User();
-$blnCacheEnabled = (!defined('ENABLE_CACHE')) || !ENABLE_CACHE;
+$blnCacheEnabled = (defined('ENABLE_CACHE') && ENABLE_CACHE);
 
 // Check form token
 if(!$objVh->validate('wimb_page_block_search')){
@@ -58,8 +58,8 @@ if($htmError){
 
 // Check for cached data
 if(!$blnCacheEnabled) Cache::enableCache();
-$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', 'pageBlockInfo_' . $objUser->uID, FALSE)) && is_array($cachePgBlkInfo) ? $cachePgBlkInfo : array();
-$arrPageIds = ($cachePageIds = Cache::get('wimb', 'pageIds_' . $objUser->uID, FALSE)) && is_array($cachePageIds) ? $cachePageIds : array();
+$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', 'pageBlockInfo_' . $objUser->uID, FALSE, TRUE)) ? $cachePgBlkInfo : array();
+$arrPageIds = ($cachePageIds = Cache::get('wimb', 'pageIds_' . $objUser->uID, FALSE)) ? $cachePageIds : array();
 if(!$blnCacheEnabled) Cache::disableCache();
 
 // Refresh cache if needed
