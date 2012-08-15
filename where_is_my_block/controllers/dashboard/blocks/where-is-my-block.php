@@ -83,8 +83,8 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		$objHh = Loader::helper('html');
 		
 		$strJs = '
-		var WIMB = WIMB || {};
-		WIMB.URL_TOOL_PAGE_BLOCK_SEARCH = "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";
+		var WhereIsMyBlock = WhereIsMyBlock || {};
+		WhereIsMyBlock.URL_TOOL_PAGE_BLOCK_SEARCH = "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";
 		';
 		
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
@@ -132,7 +132,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @since July 12, 2012
 	 */
 	public function isAllowedBlockTypeId($btId){
-		return (is_numeric($btId)) && array_key_exists($btId, $this->arrAllowedBtIds) && $this->arrAllowedBtIds[$btId] === TRUE;
+		return ((is_numeric($btId)) && $this->arrAllowedBtIds[(int) $btId] === TRUE);
 	}
 	
 	

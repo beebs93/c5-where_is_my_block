@@ -103,7 +103,8 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->g
 
 <script type="text/javascript">
 jQuery(document).ready(function($){
-	var oWimbForm = new WIMB.SearchForm();
+	var oWimbForm = new WhereIsMyBlock.Form();
+	oWimbForm.init();
 });
 </script>
 

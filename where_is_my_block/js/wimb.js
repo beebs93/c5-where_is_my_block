@@ -8,7 +8,7 @@
  */
 (function($){
 
-WIMB.SearchForm = function(){
+WhereIsMyBlock.Form = function(){
 	var _this = this,
 		$container = $('div.ccm-dashboard-page-container'),
 		$ccmBody = $('div.ccm-pane-body'),
@@ -141,7 +141,7 @@ WIMB.SearchForm = function(){
 		}
 		sQuery = sQuery.slice(0, sQuery.length - 1);
 		
-		$.get(WIMB.URL_TOOL_PAGE_BLOCK_SEARCH + sQuery, _this.handleResponse, 'json');
+		$.get(WhereIsMyBlock.URL_TOOL_PAGE_BLOCK_SEARCH + sQuery, _this.parseResponse, 'json');
 
 		//console.log(sQuery);
 	};
@@ -158,7 +158,7 @@ WIMB.SearchForm = function(){
 	 * @author Brad Beebe
 	 * @since July 12, 2012
 	 */
-	this.handleResponse = function(oData){
+	this.parseResponse = function(oData){
 		var oData = oData || {};
 		
 		// Remove any previous dynamic elements
@@ -239,10 +239,6 @@ WIMB.SearchForm = function(){
 		
 		$loader.hide();
 	};
-
-
-	// Auto-run constructor
-	this.init();
 };
 
 })(jQuery);
