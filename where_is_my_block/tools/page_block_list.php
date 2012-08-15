@@ -58,7 +58,7 @@ if($htmError){
 
 // Check for cached data
 if(!$blnCacheEnabled) Cache::enableCache();
-$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', 'pageBlockInfo_' . $objUser->uID, FALSE, TRUE)) && is_array($cachePgBlkInfo) ? $cachePgBlkInfo : array();
+$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', 'pageBlockInfo_' . $objUser->uID, FALSE)) && is_array($cachePgBlkInfo) ? $cachePgBlkInfo : array();
 $arrPageIds = ($cachePageIds = Cache::get('wimb', 'pageIds_' . $objUser->uID, FALSE)) && is_array($cachePageIds) ? $cachePageIds : array();
 if(!$blnCacheEnabled) Cache::disableCache();
 
