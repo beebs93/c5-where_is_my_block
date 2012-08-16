@@ -21,3 +21,6 @@
 - Formatting changes for c5 coding style guide
 - Minor UI changes
 - Minor performance tweaks
+
+0.9.0.6 - August 2012
+- Fixed bug with paginating unapproved pages
