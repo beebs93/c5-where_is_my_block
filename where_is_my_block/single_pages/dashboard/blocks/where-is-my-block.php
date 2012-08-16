@@ -26,7 +26,7 @@ foreach($arrBlockTypes as $keyI => $arrBt){
 		
 		if($keyI > 0) $htmBtOpts .= '</optgroup>';
 		
-		$htmBtOpts .= '<optgroup label="' . t($objTh->unhandle($strOptGroup)) . ' Blocks">';
+		$htmBtOpts .= '<optgroup label="' . t($objTh->unhandle($strOptGroup) . ' Blocks') . '">';
 	}
 	
 	$htmBtOpts .= '<option value="' . $arrBt['id'] . '">' . $objTh->specialchars(t($arrBt['name'])) . '</option>';
