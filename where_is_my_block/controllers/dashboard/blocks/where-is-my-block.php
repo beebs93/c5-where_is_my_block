@@ -26,7 +26,9 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		
 		foreach($arrAllBlockTypes as $objBt){
 			// Skip any internal block types (e.g. Dashboard blocks)
-			if($objBt->isBlockTypeInternal()) continue;
+			if($objBt->isBlockTypeInternal()){
+				continue;
+			}
 			
 			$arrBtInfo = array(
 				'id' => (int) $objBt->btID,

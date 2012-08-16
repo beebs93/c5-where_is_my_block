@@ -24,13 +24,19 @@ if(!$objVh->validate('wimb_page_block_search')){
 $intSearchBtId = (int) $_GET['btid'];
 
 $intSearchIpp = (int) $_GET['ipp'];
-if(!$objController->isValidItemsPerPage($intSearchIpp)) $intSearchIpp = 10;
+if(!$objController->isValidItemsPerPage($intSearchIpp)){
+	$intSearchIpp = 10;
+}
 
 $strSearchSort = strtolower((string) $_GET['sort_by']);
-if(!$objController->isValidSortableCol($strSearchSort)) $strSearchSort = 'page_name';
+if(!$objController->isValidSortableCol($strSearchSort)){
+	$strSearchSort = 'page_name';
+}
 
 $strSearchDir = strtolower((string) $_GET['sort_dir']);
-if($strSearchDir != 'desc') $strSearchDir = 'asc';
+if($strSearchDir != 'desc'){
+	$strSearchDir = 'asc';
+}
 
 $blnRefresh = isset($_GET['refresh']) ? (bool) $_GET['refresh'] : FALSE;
 
@@ -57,10 +63,16 @@ if($htmError){
 }
 
 // Check for cached data
-if(!$blnCacheEnabled) Cache::enableCache();
+if(!$blnCacheEnabled){
+	Cache::enableCache();
+}
+
 $arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', 'pageBlockInfo_' . $objUser->uID, FALSE, TRUE)) ? $cachePgBlkInfo : array();
 $arrPageIds = ($cachePageIds = Cache::get('wimb', 'pageIds_' . $objUser->uID, FALSE)) ? $cachePageIds : array();
-if(!$blnCacheEnabled) Cache::disableCache();
+
+if(!$blnCacheEnabled){
+	Cache::disableCache();
+}
 
 // Refresh cache if needed
 if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === TRUE){
@@ -81,20 +93,28 @@ if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === T
 	$arrPageBlockInfo = array();
 	$arrPageIds = array();
 	foreach($arrAllowedPages as $objPage){
-		if((!is_object($objPage)) || !$objPage instanceof Page || $objPage->error) continue;
+		if((!is_object($objPage)) || !$objPage instanceof Page || $objPage->error){
+			continue;
+		}
 		
 		$intPageId = $objPage->getCollectionID();
 		$strName = $objPage->getCollectionName();
 		$strPath = trim($objPage->getCollectionPath());
-		if(strlen($strPath) == 0) $strPath = '/';
+		if(strlen($strPath) == 0){
+			$strPath = '/';
+		}
 		
 		$arrPageBlocks = (array) $objPage->getBlocks(FALSE);
 		
 		foreach($arrPageBlocks as $objBlock){
-			if((!$objBlock instanceof Block) || $objBlock->btID != $intSearchBtId) continue;
+			if((!$objBlock instanceof Block) || $objBlock->btID != $intSearchBtId){
+				continue;
+			}
 			
 			$objBlkPerm = new Permissions($objBlock);
-			if(!$objBlkPerm->canRead()) continue;
+			if(!$objBlkPerm->canRead()){
+				continue;
+			}
 			
 			if(is_array($arrPageBlockInfo[$strPath])){
 				$arrPageBlockInfo[$strPath]['instances']++;
@@ -125,10 +145,16 @@ if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === T
 	}
 
 	// Cache the results for future sorting/pagination
-	if(!$blnCacheEnabled) Cache::enableCache();
+	if(!$blnCacheEnabled){
+		Cache::enableCache();
+	}
+
 	Cache::set('wimb', 'pageBlockInfo_' . $objUser->uID, $arrPageBlockInfo, (time() + 600));
 	Cache::set('wimb', 'pageIds_' . $objUser->uID, $arrPageIds, (time() + 600));	
-	if(!$blnCacheEnabled) Cache::disableCache();
+	
+	if(!$blnCacheEnabled){
+		Cache::disableCache();
+	}
 }
 
 // Convert the list of page IDs into a query string
@@ -142,33 +168,29 @@ $objPl->setItemsPerPage($intSearchIpp);
 (array) $objPl->getPage();
 
 // Apply sorting
+$strFirst = $strSearchDir == 'asc' ? '$a' : '$b';
+$strSecond = $strFirst == '$a' ? '$b' : '$a';
+$strOperator = $strSearchDir == 'asc' ? '>' : '<';
+
 switch($strSearchSort){
 	case 'page_name':
-		$strFirst = $strSearchDir == 'asc' ? '$a' : '$b';
-		$strSecond = $strFirst == '$a' ? '$b' : '$a';
-		
 		usort($arrPageBlockInfo, create_function('$a, $b', '
 			return strnatcmp(strtolower(' . $strFirst . '["page_name"]), strtolower(' . $strSecond . '["page_name"]));
 		'));		
-	break;
+		break;
 	
 	case 'page_path':
-		$strFirst = $strSearchDir == 'asc' ? '$a' : '$b';
-		$strSecond = $strFirst == '$a' ? '$b' : '$a';
-		
 		usort($arrPageBlockInfo, create_function('$a, $b', '
 			$strRgx = "/[^a-zA-Z0-9]/";
 			return strnatcmp(preg_replace($strRgx, "", ' . $strFirst . '["page_path"]), preg_replace($strRgx, "", ' . $strSecond . '["page_path"]));
 		'));		
-	break;
+		break;
 	
 	case 'instances':
-		$strOperator = $strSearchDir == 'asc' ? '>' : '<';
-		
 		usort($arrPageBlockInfo, create_function('$a, $b', '
 			return $a["instances"] ' . $strOperator . ' $b["instances"];
 		'));		
-	break;
+		break;
 }
 
 // If the results are paginated we get the pagination HTML and slice our custom results array

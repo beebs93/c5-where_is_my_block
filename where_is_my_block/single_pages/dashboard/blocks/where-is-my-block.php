@@ -24,7 +24,9 @@ foreach($arrBlockTypes as $keyI => $arrBt){
 	if(($keyI === 0) || $arrBlockTypes[($keyI - 1)]['category'] != $arrBt['category']){
 		$strOptGroup = $objTh->specialchars(ucwords($arrBt['category']));
 		
-		if($keyI > 0) $htmBtOpts .= '</optgroup>';
+		if($keyI > 0){
+			$htmBtOpts .= '</optgroup>';
+		}
 		
 		$htmBtOpts .= '<optgroup label="' . t($objTh->unhandle($strOptGroup) . ' Blocks') . '">';
 	}
