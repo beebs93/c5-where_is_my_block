@@ -21,13 +21,10 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		parent::__construct();
 		
 		// Get a list of all installed block types and extract the pertinent
-		// information from each block type object that we can search for
+		// information from each block type object
 		$arrAllBlockTypes = (array) BlockTypeList::getInstalledList();
 		
 		foreach($arrAllBlockTypes as $objBt){
-			// Skip any internal block types (e.g. Dashboard blocks)
-			if($objBt->isBlockTypeInternal()) continue;
-			
 			$arrBtInfo = array(
 				'id' => (int) $objBt->btID,
 				'handle' => (string) $objBt->btHandle,
@@ -60,10 +57,18 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @since July 12, 2012
 	 */
 	public function on_start(){
-		$this->set('objDh', $this->helperObjects['concrete_dashboard']);
-		$this->set('objNh', $this->helperObjects['navigation']);
-		$this->set('objTh', $this->helperObjects['text']);
-		$this->set('objPkg', Loader::package('where_is_my_block'));
+		$objUh = Loader::helper('concrete/urls');
+		$objHh = Loader::helper('html');
+		
+		$strJs = '
+		<script type="text/javascript">
+		var WhereIsMyBlock = WhereIsMyBlock || {};
+		WhereIsMyBlock.URL_TOOL_PAGE_BLOCK_SEARCH = "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";
+		</script>';
+		
+		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
+		$this->addHeaderItem($strJs);
+		$this->addHeaderItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
 		
 		parent::on_start();
 	}
@@ -71,7 +76,6 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	
 	/**
 	 * Single page view
-	 * Adds any CSS/JS and sets any form options in the view scope
 	 * 
 	 * @return void
 	 * 
@@ -79,18 +83,13 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @since July 12, 2012
 	 */
 	public function view(){
-		$objUh = Loader::helper('concrete/urls');
-		$objHh = Loader::helper('html');
+		// Add any core helpers, models, etc. in the view scope
+		$this->set('objDh', $this->helperObjects['concrete_dashboard']);
+		$this->set('objNh', $this->helperObjects['navigation']);
+		$this->set('objTh', $this->helperObjects['text']);
+		$this->set('objPkg', Loader::package('where_is_my_block'));
 		
-		$strJs = '
-		var WhereIsMyBlock = WhereIsMyBlock || {};
-		WhereIsMyBlock.URL_TOOL_PAGE_BLOCK_SEARCH = "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";
-		';
-		
-		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
-		$this->addHeaderItem('<script type="text/javascript">' . $strJs . '</script>');
-		$this->addHeaderItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
-		
+		// Add any form vars in the view scope
 		$this->set('arrBlockTypes', $this->arrBlockTypes);
 		$this->set('arrItemsPerPage', $this->arrItemsPerPage);
 	}

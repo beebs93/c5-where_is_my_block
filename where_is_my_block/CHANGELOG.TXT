@@ -15,3 +15,9 @@
 
 0.9.0.4 - August 2012
 - Changed minimum required concrete5 version
+
+0.9.0.5 - August 2012
+- Allow dashboard/system/unapproved pages + global areas/stacks to be searched
+- Formatting changes for c5 coding style guide
+- Minor UI changes
+- Minor performance tweaks
