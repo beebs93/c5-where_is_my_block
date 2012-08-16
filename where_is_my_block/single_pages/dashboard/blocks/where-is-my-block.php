@@ -40,7 +40,7 @@ foreach($arrItemsPerPage as $intPerPage){
 }
 
 // Begin pane
-echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->getPackageDescription(), 'span16', false);
+echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->getPackageDescription(), 'span16', FALSE);
 ?>
 
 <div class="ccm-pane-options clearfix">
@@ -110,5 +110,5 @@ jQuery(document).ready(function($){
 
 <?php
 // End pane
-echo $objDh->getDashboardPaneFooterWrapper(false);
+echo $objDh->getDashboardPaneFooterWrapper(FALSE);
 ?>
