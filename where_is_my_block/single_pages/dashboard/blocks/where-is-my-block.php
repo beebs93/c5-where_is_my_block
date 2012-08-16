@@ -1,11 +1,11 @@
 <?php 
 defined('C5_EXECUTE') or die(_('Access Denied.'));
 
-// Type cast vars passed from controller
+// Type cast form vars passed from controller
 $arrBlockTypes = (array) $arrBlockTypes;
 $arrItemsPerPage = (array) $arrItemsPerPage;
 
-// Get any help blocks (ensure user can view any link beforehand)
+// Get any help blocks (ensure user can view any links beforehand)
 $htmViewPermText = t('Some pages/blocks may be omitted due to your current viewing permissions.');;
 
 $objCache = Page::getByPath('/dashboard/system/optimization/clear_cache');
@@ -23,6 +23,7 @@ if(!$objPerm->canRead()){
 $htmBtOpts = '<option value="">' . t('Choose a block type') . '</option>';
 
 foreach($arrBlockTypes as $keyI => $arrBt){
+	// Break options list into option groups based on block type category
 	if(($keyI === 0) || $arrBlockTypes[($keyI - 1)]['category'] != $arrBt['category']){
 		$strOptGroup = $objTh->specialchars(ucwords($arrBt['category']));
 		

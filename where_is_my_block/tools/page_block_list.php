@@ -51,7 +51,7 @@ if(!is_numeric($intSearchBtId) || $intSearchBtId < 0){
 }
 
 // Return any errors
-if($htmError){
+if($htmError !== FALSE){
 	$objResp = new stdClass();
 	$objResp->status = 'error';
 	$objResp->alert = $htmError;
@@ -148,7 +148,7 @@ if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === T
 		exit;
 	}
 
-	// Cache the results for future sorting/pagination
+	// Cache the results for future sorting/pagination (with a relatively short TTL)
 	if(!$blnCacheEnabled){
 		Cache::enableCache();
 	}

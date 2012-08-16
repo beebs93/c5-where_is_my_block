@@ -21,7 +21,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		parent::__construct();
 		
 		// Get a list of all installed block types and extract the pertinent
-		// information from each block type object that we can search for
+		// information from each block type object
 		$arrAllBlockTypes = (array) BlockTypeList::getInstalledList();
 		
 		foreach($arrAllBlockTypes as $objBt){
@@ -61,12 +61,13 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		$objHh = Loader::helper('html');
 		
 		$strJs = '
+		<script type="text/javascript">
 		var WhereIsMyBlock = WhereIsMyBlock || {};
 		WhereIsMyBlock.URL_TOOL_PAGE_BLOCK_SEARCH = "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";
-		';
+		</script>';
 		
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
-		$this->addHeaderItem('<script type="text/javascript">' . $strJs . '</script>');
+		$this->addHeaderItem($strJs);
 		$this->addHeaderItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
 		
 		parent::on_start();
@@ -82,6 +83,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @since July 12, 2012
 	 */
 	public function view(){
+		// Add any core helpers, models, etc. in the view scope
 		$this->set('objDh', $this->helperObjects['concrete_dashboard']);
 		$this->set('objNh', $this->helperObjects['navigation']);
 		$this->set('objTh', $this->helperObjects['text']);
