@@ -95,7 +95,6 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->g
 	<hr />
 	
 	<span class="help-block"><?php echo t('Some pages/blocks may be omitted due to your current viewing permissions.'); ?></span>
-	<span class="help-block"><?php echo t('System pages (e.g. <em>Login, Error 404, dashboard pages, etc.</em>) are not searched.'); ?></span>
 	
 	<?php echo $htmHelpLinks; ?>
 	

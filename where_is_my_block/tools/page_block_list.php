@@ -78,13 +78,14 @@ if($blnRefresh !== TRUE){
 
 // Refresh cache (if needed)
 if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === TRUE){
-	// Get a list of all non-system, non-aliased pages viewable by the current user
+	// Get a list of all non-aliased pages viewable by the current user
 	$objHome = Page::getByID(HOME_CID);
 	$strHomePath = (string) $objHome->getCollectionPath();
 
 	$objPl = new PageList();
 	$objPl->filterByPath($strHomePath, TRUE);
 	$objPl->ignoreAliases();
+	$objPl->includeSystemPages();
 	$arrAllowedPages = (array) $objPl->get();
 
 	$objPerm = new Permissions($objHome);
