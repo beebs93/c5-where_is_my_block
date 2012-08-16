@@ -168,6 +168,8 @@ $strFilter = '(p1.cID IN(' . implode(',', $arrPageIds) . '))';
 // so we can use its built-in paginator to easily extract any pagination information
 $objPl = new PageList();
 $objPl->filter(FALSE, $strFilter);
+$objPl->includeSystemPages();
+$objPl->displayUnapprovedPages();
 $objPl->setItemsPerPage($intSearchIpp);	
 (array) $objPl->getPage();
 
