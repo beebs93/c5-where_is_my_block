@@ -6,7 +6,7 @@ $arrBlockTypes = (array) $arrBlockTypes;
 $arrItemsPerPage = (array) $arrItemsPerPage;
 
 // Get any help blocks (ensure user can view any links beforehand)
-$htmViewPermText = t('Some pages/blocks may be omitted due to your current viewing permissions.');;
+$strViewPermText = t('Some pages/blocks may be omitted due to your current viewing permissions.');;
 
 $objCache = Page::getByPath('/dashboard/system/optimization/clear_cache');
 $objPerm = new Permissions($objCache);
@@ -14,8 +14,7 @@ $objPerm = new Permissions($objCache);
 if(!$objPerm->canRead()){
 	$htmClearCacheText = '';
 }else{
-	$strClearCacheUrl = $objNh->getLinkToCollection($objCache, TRUE);
-	
+	$strClearCacheUrl = $objNh->getLinkToCollection($objCache, TRUE);	
 	$htmClearCacheText = t('You may also want to <a href="' . $strClearCacheUrl . '">clear your cache</a> to ensure you have the most up-to-date results.');
 }
 
@@ -45,7 +44,11 @@ foreach($arrItemsPerPage as $intPerPage){
 }
 
 // Begin pane
-echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->getPackageDescription() . '<br /><br />' . $htmViewPermText, 'span16', FALSE);
+$htmHelpToolTip = $objPkg->getPackageDescription() . '<br /><br />';
+$htmHelpToolTip .= $strViewPermText . '<br /><br />';
+$htmHelpToolTip .= $htmClearCacheText;
+
+echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpToolTip, 'span16', FALSE);
 ?>
 
 <div class="ccm-pane-options clearfix">
@@ -97,7 +100,7 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->g
 	
 	<hr />
 	
-	<span class="help-block"><?php echo $htmViewPermText ?></span>
+	<span class="help-block"><?php echo $strViewPermText ?></span>
 	<span class="help-block"><?php echo $htmClearCacheText; ?></span>
 <!-- .ccm-pane-body --></div>
 	
