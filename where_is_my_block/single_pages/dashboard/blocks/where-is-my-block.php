@@ -45,7 +45,7 @@ foreach($arrItemsPerPage as $intPerPage){
 }
 
 // Begin pane
-echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->getPackageDescription() . '<br />' . $htmViewPermText, 'span16', FALSE);
+echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->getPackageDescription() . '<br /><br />' . $htmViewPermText, 'span16', FALSE);
 ?>
 
 <div class="ccm-pane-options clearfix">
