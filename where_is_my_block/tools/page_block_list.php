@@ -62,19 +62,21 @@ if($htmError){
 	exit;
 }
 
-// Check for cached data
-if(!$blnCacheEnabled){
-	Cache::enableCache();
+// Check for cached data (if we're not refreshing it)
+if($blnRefresh !== TRUE){
+	if(!$blnCacheEnabled){
+		Cache::enableCache();
+	}
+
+	$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', 'pageBlockInfo_' . $objUser->uID, FALSE, TRUE)) ? $cachePgBlkInfo : array();
+	$arrPageIds = ($cachePageIds = Cache::get('wimb', 'pageIds_' . $objUser->uID, FALSE)) ? $cachePageIds : array();
+
+	if(!$blnCacheEnabled){
+		Cache::disableCache();
+	}
 }
 
-$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', 'pageBlockInfo_' . $objUser->uID, FALSE, TRUE)) ? $cachePgBlkInfo : array();
-$arrPageIds = ($cachePageIds = Cache::get('wimb', 'pageIds_' . $objUser->uID, FALSE)) ? $cachePageIds : array();
-
-if(!$blnCacheEnabled){
-	Cache::disableCache();
-}
-
-// Refresh cache if needed
+// Refresh cache (if needed)
 if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === TRUE){
 	// Get a list of all non-system, non-aliased pages viewable by the current user
 	$objHome = Page::getByID(HOME_CID);
