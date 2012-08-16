@@ -5,16 +5,18 @@ defined('C5_EXECUTE') or die(_('Access Denied.'));
 $arrBlockTypes = (array) $arrBlockTypes;
 $arrItemsPerPage = (array) $arrItemsPerPage;
 
-// Get links for any help blocks (ensure user can view them beforehand)
+// Get any help blocks (ensure user can view any link beforehand)
+$htmViewPermText = t('Some pages/blocks may be omitted due to your current viewing permissions.');;
+
 $objCache = Page::getByPath('/dashboard/system/optimization/clear_cache');
 $objPerm = new Permissions($objCache);
 
 if(!$objPerm->canRead()){
-	$htmHelpLinks = '';
+	$htmClearCacheText = '';
 }else{
 	$strClearCacheUrl = $objNh->getLinkToCollection($objCache, TRUE);
 	
-	$htmHelpLinks = '<span class="help-block">' . t('You may also want to <a href="' . $strClearCacheUrl . '">clear your cache</a> to ensure you have the most up-to-date results.') . '</span>';
+	$htmClearCacheText = t('You may also want to <a href="' . $strClearCacheUrl . '">clear your cache</a> to ensure you have the most up-to-date results.');
 }
 
 // Generate option elements for block type select menu
@@ -42,7 +44,7 @@ foreach($arrItemsPerPage as $intPerPage){
 }
 
 // Begin pane
-echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->getPackageDescription(), 'span16', FALSE);
+echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->getPackageDescription() . '<br />' . $htmViewPermText, 'span16', FALSE);
 ?>
 
 <div class="ccm-pane-options clearfix">
@@ -94,10 +96,8 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $objPkg->g
 	
 	<hr />
 	
-	<span class="help-block"><?php echo t('Some pages/blocks may be omitted due to your current viewing permissions.'); ?></span>
-	
-	<?php echo $htmHelpLinks; ?>
-	
+	<span class="help-block"><?php echo $htmViewPermText ?></span>
+	<span class="help-block"><?php echo $htmClearCacheText; ?></span>
 <!-- .ccm-pane-body --></div>
 	
 <div class="ccm-pane-footer"></div>
