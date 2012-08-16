@@ -62,25 +62,6 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @since July 12, 2012
 	 */
 	public function on_start(){
-		$this->set('objDh', $this->helperObjects['concrete_dashboard']);
-		$this->set('objNh', $this->helperObjects['navigation']);
-		$this->set('objTh', $this->helperObjects['text']);
-		$this->set('objPkg', Loader::package('where_is_my_block'));
-		
-		parent::on_start();
-	}
-	
-	
-	/**
-	 * Single page view
-	 * Adds any CSS/JS and sets any form options in the view scope
-	 * 
-	 * @return void
-	 * 
-	 * @author Brad Beebe
-	 * @since July 12, 2012
-	 */
-	public function view(){
 		$objUh = Loader::helper('concrete/urls');
 		$objHh = Loader::helper('html');
 		
@@ -93,6 +74,25 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		$this->addHeaderItem('<script type="text/javascript">' . $strJs . '</script>');
 		$this->addHeaderItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
 		
+		parent::on_start();
+	}
+	
+	
+	/**
+	 * Single page view
+	 * 
+	 * @return void
+	 * 
+	 * @author Brad Beebe
+	 * @since July 12, 2012
+	 */
+	public function view(){
+		$this->set('objDh', $this->helperObjects['concrete_dashboard']);
+		$this->set('objNh', $this->helperObjects['navigation']);
+		$this->set('objTh', $this->helperObjects['text']);
+		$this->set('objPkg', Loader::package('where_is_my_block'));
+		
+		// Add any form vars in the view scope
 		$this->set('arrBlockTypes', $this->arrBlockTypes);
 		$this->set('arrItemsPerPage', $this->arrItemsPerPage);
 	}
