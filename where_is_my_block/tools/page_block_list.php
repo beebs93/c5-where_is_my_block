@@ -86,6 +86,7 @@ if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === T
 	$objPl->filterByPath($strHomePath, TRUE);
 	$objPl->ignoreAliases();
 	$objPl->includeSystemPages();
+	$objPl->displayUnapprovedPages();
 	$arrAllowedPages = (array) $objPl->get();
 
 	$objPerm = new Permissions($objHome);
