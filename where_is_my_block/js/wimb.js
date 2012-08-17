@@ -106,6 +106,15 @@ WhereIsMyBlock.Form = function(){
 			
 			return false;
 		});
+
+		// IF there are any sticky form values we auto-submit the form on page load
+		if($btidSelect.find(':selected').val() != ''){
+			$pagingInput.val(1);
+
+			$refreshInput.val(0);
+
+			_this.submitForm();
+		}
 	};
 
 

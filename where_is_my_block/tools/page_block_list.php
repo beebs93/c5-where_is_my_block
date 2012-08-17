@@ -40,6 +40,14 @@ if($strSearchDir != 'desc'){
 
 $blnRefresh = isset($_GET['refresh']) ? (bool) $_GET['refresh'] : FALSE;
 
+// Record the options to make the form sticky
+$_SESSION['wimb_form_options'] = array(
+	'btid' => $intSearchBtId,
+	'ipp' => $intSearchIpp,
+	'sort_by' => $strSearchSort,
+	'sort_dir' => $strSearchDir
+);
+
 // Check for a valid block type ID
 $htmError = FALSE;
 if(!is_numeric($intSearchBtId) || $intSearchBtId < 0){
@@ -63,17 +71,26 @@ if($htmError !== FALSE){
 }
 
 // Check for cached data (if we're not refreshing it)
-if($blnRefresh !== TRUE){
-	if(!$blnCacheEnabled){
-		Cache::enableCache();
-	}
+$arrPageBlockInfo = array();
+$arrPageIds = array();
 
-	$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', 'pageBlockInfo_' . $objUser->uID, FALSE, TRUE)) ? $cachePgBlkInfo : array();
-	$arrPageIds = ($cachePageIds = Cache::get('wimb', 'pageIds_' . $objUser->uID, FALSE)) ? $cachePageIds : array();
+$keyPgBlkInfo = 'pageBlockInfo_' . $objUser->uID;
+$keyPgIds = 'pageIds_' . $objUser->uID;
 
-	if(!$blnCacheEnabled){
-		Cache::disableCache();
-	}
+if(!$blnCacheEnabled){
+	Cache::enableCache();
+}
+
+if($blnRefresh === TRUE){
+	Cache::delete('wimb', $keyPgBlkInfo);
+	Cache::delete('wimb', $keyPgIds);
+}else{
+	$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', $keyPgBlkInfo, FALSE)) ? $cachePgBlkInfo : array();
+	$arrPageIds = ($cachePageIds = Cache::get('wimb', $keyPgIds, FALSE)) ? $cachePageIds : array();
+}
+
+if(!$blnCacheEnabled){
+	Cache::disableCache();
 }
 
 // Refresh cache (if needed)
@@ -153,8 +170,8 @@ if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === T
 		Cache::enableCache();
 	}
 
-	Cache::set('wimb', 'pageBlockInfo_' . $objUser->uID, $arrPageBlockInfo, (time() + 600));
-	Cache::set('wimb', 'pageIds_' . $objUser->uID, $arrPageIds, (time() + 600));	
+	Cache::set('wimb', $keyPgBlkInfo, $arrPageBlockInfo, (time() + 600));
+	Cache::set('wimb', $keyPgIds, $arrPageIds, (time() + 600));	
 	
 	if(!$blnCacheEnabled){
 		Cache::disableCache();

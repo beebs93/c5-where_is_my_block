@@ -5,6 +5,9 @@ defined('C5_EXECUTE') or die(_('Access Denied.'));
 $arrBlockTypes = (array) $arrBlockTypes;
 $arrItemsPerPage = (array) $arrItemsPerPage;
 
+// Get any previous form options
+$arrFormOpts = isset($_SESSION['wimb_form_options']) ? (array) $_SESSION['wimb_form_options'] : array();
+
 // Get any help blocks (ensure user can view any links beforehand)
 $strViewPermText = t('Some pages/blocks may be omitted due to your current viewing permissions.');;
 
@@ -33,14 +36,18 @@ foreach($arrBlockTypes as $keyI => $arrBt){
 		$htmBtOpts .= '<optgroup label="' . t($objTh->unhandle($strOptGroup) . ' Blocks') . '">';
 	}
 	
-	$htmBtOpts .= '<option value="' . $arrBt['id'] . '">' . $objTh->specialchars(t($arrBt['name'])) . '</option>';
+	$strSelected = $arrFormOpts['btid'] == $arrBt['id'] ? ' selected' : '';
+
+	$htmBtOpts .= '<option value="' . $arrBt['id'] . '"' . $strSelected . '>' . $objTh->specialchars(t($arrBt['name'])) . '</option>';
 }
 
 // Generate option elements for items per page select menu 
 $htmIppOpts = '';
 
 foreach($arrItemsPerPage as $intPerPage){
-	$htmIppOpts .= '<option value="' . $intPerPage . '">' . $intPerPage . '</option>';
+	$strSelected = $arrFormOpts['ipp'] == $intPerPage ? ' selected' : '';
+
+	$htmIppOpts .= '<option value="' . $intPerPage . '"' . $strSelected . '>' . $intPerPage . '</option>';
 }
 
 // Begin pane
@@ -67,8 +74,8 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 
 				<?php $this->controller->token->output('wimb_page_block_search'); ?>
 
-				<input type="hidden" name="sort_by" value="page_name" />
-				<input type="hidden" name="sort_dir" value="asc" />
+				<input type="hidden" name="sort_by" value="<?php echo $arrFormOpts['sort_by']; ?>" />
+				<input type="hidden" name="sort_dir" value="<?php echo $arrFormOpts['sort_dir']; ?>" />
 				<input type="hidden" name="ccm_paging_p" value="1" />
 				<input type="hidden" name="refresh" value="1" />
 				
