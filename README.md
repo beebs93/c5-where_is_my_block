@@ -7,7 +7,7 @@ This is the latest <em>development</em> release of the add-on. <strong>Use this 
 
 #### Manual Download/Installation
 - <del>Download/install the latest <em>stable</em> release from the concrete5 Marketplace.</del> (<em>not released yet</em>)
-- View the tags section (https://github.com/beebs93/c5-where_is_my_block/tags) to download the latest <em>stable</em> release.
+- Download the latest <em>stable</em> release from the "Downloads" section (https://github.com/beebs93/c5-where_is_my_block/downloads)
 - Upload the <strong>where_is_my_block</strong> folder to your <strong>/packages</strong> directory (<em>NOT</em> /concrete/packages).
 - Install the package via Dashboard->Install.
 
