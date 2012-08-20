@@ -38,6 +38,12 @@ if($strSearchDir != 'desc'){
 	$strSearchDir = 'asc';
 }
 
+if((isset($_GET['ccm_paging_p'])) && is_numeric($_GET['ccm_paging_p'])){
+	$_GET['ccm_paging_p'] = (int) abs($_GET['ccm_paging_p']));
+}else{
+	$_GET['ccm_paging_p'] = 1;
+}
+
 $blnRefresh = isset($_GET['refresh']) ? (bool) $_GET['refresh'] : FALSE;
 
 // Record the options to make the form sticky
@@ -45,7 +51,8 @@ $_SESSION['wimb_form_options'] = array(
 	'btid' => $intSearchBtId,
 	'ipp' => $intSearchIpp,
 	'sort_by' => $strSearchSort,
-	'sort_dir' => $strSearchDir
+	'sort_dir' => $strSearchDir,
+	'ccm_paging_p' => $_GET['ccm_paging_p']
 );
 
 // Check for a valid block type ID

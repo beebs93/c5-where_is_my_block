@@ -76,7 +76,7 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 
 				<input type="hidden" name="sort_by" value="<?php echo $arrFormOpts['sort_by']; ?>" />
 				<input type="hidden" name="sort_dir" value="<?php echo $arrFormOpts['sort_dir']; ?>" />
-				<input type="hidden" name="ccm_paging_p" value="1" />
+				<input type="hidden" name="ccm_paging_p" value="<?php echo $arrFormOpts['ccm_paging_p'] ? $arrFormOpts['ccm_paging_p'] : 1; ?>" />
 				<input type="hidden" name="refresh" value="1" />
 				
 				<?php echo $interface->submit(t('Search'), 'wimb', 'left', 'secondary'); ?>

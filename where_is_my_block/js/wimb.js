@@ -108,9 +108,7 @@ WhereIsMyBlock.Form = function(){
 		});
 
 		// IF there are any sticky form values we auto-submit the form on page load
-		if($btidSelect.find(':selected').val() != ''){
-			$pagingInput.val(1);
-
+		if($btidSelect.find(':selected').val() != ''){			
 			$refreshInput.val(0);
 
 			_this.submitForm();
