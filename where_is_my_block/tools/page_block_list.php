@@ -39,7 +39,7 @@ if($strSearchDir != 'desc'){
 }
 
 if((isset($_GET['ccm_paging_p'])) && is_numeric($_GET['ccm_paging_p'])){
-	$_GET['ccm_paging_p'] = (int) abs($_GET['ccm_paging_p']));
+	$_GET['ccm_paging_p'] = (int) abs($_GET['ccm_paging_p']);
 }else{
 	$_GET['ccm_paging_p'] = 1;
 }
