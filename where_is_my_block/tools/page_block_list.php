@@ -4,6 +4,7 @@ defined('C5_EXECUTE') or die(_('Access Denied.'));
 Loader::model('page_list');
 $objJh = Loader::helper('json');
 $objVh = Loader::helper('validation/token');
+$objNh = Loader::helper('navigation');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');
 $objUser = new User();
 $blnCacheEnabled = (defined('ENABLE_CACHE') && ENABLE_CACHE);
@@ -38,6 +39,12 @@ if($strSearchDir != 'desc'){
 	$strSearchDir = 'asc';
 }
 
+if((isset($_GET['ccm_paging_p'])) && is_numeric($_GET['ccm_paging_p'])){
+	$_GET['ccm_paging_p'] = (int) abs($_GET['ccm_paging_p']);
+}else{
+	$_GET['ccm_paging_p'] = 1;
+}
+
 $blnRefresh = isset($_GET['refresh']) ? (bool) $_GET['refresh'] : FALSE;
 
 // Record the options to make the form sticky
@@ -45,7 +52,8 @@ $_SESSION['wimb_form_options'] = array(
 	'btid' => $intSearchBtId,
 	'ipp' => $intSearchIpp,
 	'sort_by' => $strSearchSort,
-	'sort_dir' => $strSearchDir
+	'sort_dir' => $strSearchDir,
+	'ccm_paging_p' => $_GET['ccm_paging_p']
 );
 
 // Check for a valid block type ID
@@ -120,9 +128,9 @@ if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === T
 		
 		$intPageId = $objPage->getCollectionID();
 		$strName = $objPage->getCollectionName();
-		$strPath = trim($objPage->getCollectionPath());
+		$strPath = $objNh->getLinkToCollection($objPage, TRUE);
 		if(strlen($strPath) == 0){
-			$strPath = '/';
+			$strPath = BASE_URL;
 		}
 		
 		$arrPageBlocks = (array) $objPage->getBlocks(FALSE);

@@ -15,6 +15,7 @@ WhereIsMyBlock.Form = function(){
 		$overlay = $('div#bodyOverlay'),
 		$ccmFooter = $('div.ccm-pane-footer'),
 		$form = $('div#ccm-dashboard-content form#wimb'),
+		$formSubmit = $form.find('input[type="submit"]')
 		$loader = $('img#ccm-wimb-loading'),
 		$select = $form.find('select'),
 		$btidSelect = $select.filter('select[name="btid"]'),
@@ -108,9 +109,7 @@ WhereIsMyBlock.Form = function(){
 		});
 
 		// IF there are any sticky form values we auto-submit the form on page load
-		if($btidSelect.find(':selected').val() != ''){
-			$pagingInput.val(1);
-
+		if($btidSelect.find(':selected').val() != ''){			
 			$refreshInput.val(0);
 
 			_this.submitForm();
@@ -128,6 +127,7 @@ WhereIsMyBlock.Form = function(){
 	 * @since July 12, 2012
 	 */
 	this.submitForm = function(){
+		$formSubmit.attr('disabled', 'disabled');
 		$loader.show();
 		
 		// Clear any previous alerts/messages
@@ -210,7 +210,7 @@ WhereIsMyBlock.Form = function(){
 					
 					sTable += '<td>';
 					
-					sTable += (sCol == 'page_path') ? '<a href="' + CCM_BASE_URL + oRow[sCol] + '" target="_blank">' + sEncodedVal + '</a>' : sEncodedVal;
+					sTable += (sCol == 'page_path') ? '<a href="' + oRow[sCol] + '" target="_blank">' + sEncodedVal + '</a>' : sEncodedVal;
 					
 					sTable += '</td>'
 				}
@@ -246,6 +246,7 @@ WhereIsMyBlock.Form = function(){
 			}
 		}
 		
+		$formSubmit.removeAttr('disabled');
 		$loader.hide();
 	};
 };
