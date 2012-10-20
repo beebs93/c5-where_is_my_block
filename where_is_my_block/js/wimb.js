@@ -15,6 +15,7 @@ WhereIsMyBlock.Form = function(){
 		$overlay = $('div#bodyOverlay'),
 		$ccmFooter = $('div.ccm-pane-footer'),
 		$form = $('div#ccm-dashboard-content form#wimb'),
+		$formSubmit = $form.find('input[type="submit"]')
 		$loader = $('img#ccm-wimb-loading'),
 		$select = $form.find('select'),
 		$btidSelect = $select.filter('select[name="btid"]'),
@@ -126,6 +127,7 @@ WhereIsMyBlock.Form = function(){
 	 * @since July 12, 2012
 	 */
 	this.submitForm = function(){
+		$formSubmit.attr('disabled', 'disabled');
 		$loader.show();
 		
 		// Clear any previous alerts/messages
@@ -244,6 +246,7 @@ WhereIsMyBlock.Form = function(){
 			}
 		}
 		
+		$formSubmit.removeAttr('disabled');
 		$loader.hide();
 	};
 };
