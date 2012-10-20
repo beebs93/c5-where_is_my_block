@@ -72,14 +72,16 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 			
 			<div class="span4">
 
-				<?php $this->controller->token->output('wimb_page_block_search'); ?>
+				<?php
+				$this->controller->token->output('wimb_page_block_search');
 
-				<input type="hidden" name="sort_by" value="<?php echo $arrFormOpts['sort_by']; ?>" />
-				<input type="hidden" name="sort_dir" value="<?php echo $arrFormOpts['sort_dir']; ?>" />
-				<input type="hidden" name="ccm_paging_p" value="<?php echo $arrFormOpts['ccm_paging_p'] ? $arrFormOpts['ccm_paging_p'] : 1; ?>" />
-				<input type="hidden" name="refresh" value="1" />
-				
-				<?php echo $interface->submit(t('Search'), 'wimb', 'left', 'secondary'); ?>
+				echo $objFh->hidden('sort_by', $arrFormOpts['sort_by']);
+				echo $objFh->hidden('sort_dir', $arrFormOpts['sort_dir']);
+				echo $objFh->hidden('ccm_paging_p', $arrFormOpts['ccm_paging_p'] ? $arrFormOpts['ccm_paging_p'] : 1);
+				echo $objFh->hidden('refresh', 1);
+
+				echo $interface->submit(t('Search'), 'wimb', 'left', 'secondary');
+				?>
 				
 				<img src="/concrete/images/loader_intelligent_search.gif" width="43" height="11" id="ccm-wimb-loading" />
 			</div>

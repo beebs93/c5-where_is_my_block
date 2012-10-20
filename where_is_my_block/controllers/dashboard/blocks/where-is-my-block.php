@@ -6,7 +6,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	protected $arrAllowedBtIds = array();
 	protected $arrItemsPerPage = array(10, 25, 50, 100, 500);
 	protected $arrSortableCols = array('page_name', 'page_path', 'instances');
-	public $helpers = array('concrete/dashboard', 'navigation', 'text');
+	public $helpers = array('concrete/dashboard', 'form', 'navigation', 'text');
 	
 		
 	/**
@@ -85,6 +85,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	public function view(){
 		// Add any core helpers, models, etc. in the view scope
 		$this->set('objDh', $this->helperObjects['concrete_dashboard']);
+		$this->set('objFh', $this->helperObjects['form']);
 		$this->set('objNh', $this->helperObjects['navigation']);
 		$this->set('objTh', $this->helperObjects['text']);
 		$this->set('objPkg', Loader::package('where_is_my_block'));
