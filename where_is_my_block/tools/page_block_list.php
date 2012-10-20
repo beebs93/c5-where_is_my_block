@@ -4,6 +4,7 @@ defined('C5_EXECUTE') or die(_('Access Denied.'));
 Loader::model('page_list');
 $objJh = Loader::helper('json');
 $objVh = Loader::helper('validation/token');
+$objNh = Loader::helper('navigation');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');
 $objUser = new User();
 $blnCacheEnabled = (defined('ENABLE_CACHE') && ENABLE_CACHE);
@@ -127,9 +128,9 @@ if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === T
 		
 		$intPageId = $objPage->getCollectionID();
 		$strName = $objPage->getCollectionName();
-		$strPath = trim($objPage->getCollectionPath());
+		$strPath = $objNh->getLinkToCollection($objPage, TRUE);
 		if(strlen($strPath) == 0){
-			$strPath = '/';
+			$strPath = BASE_URL;
 		}
 		
 		$arrPageBlocks = (array) $objPage->getBlocks(FALSE);
