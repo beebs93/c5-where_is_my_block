@@ -47,6 +47,7 @@ class WhereIsMyBlockPackage extends Package{
 		
 		$objPkg = parent::install();
 		
-		SinglePage::add('/dashboard/blocks/where-is-my-block', $objPkg);		
+		$objPage = SinglePage::add('/dashboard/blocks/where-is-my-block', $objPkg);
+		$objPage->setAttribute('icon_dashboard', 'icon-search');
 	}
 }
