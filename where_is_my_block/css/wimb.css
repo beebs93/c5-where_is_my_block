@@ -7,14 +7,6 @@
 	float:left;
 }
 
-#wimb #ccm-wimb-loading{
-	width:43px;
-	height:11px;
-	margin:9px 0 0 10px;
-	display:none;
-	float:left;
-}
-
 #ccm-where-is-my-block th{
 	width:10%;
 	font-weight:bold;
@@ -42,4 +34,11 @@
 
 .ccm-pane-body hr{
 	clear:both;
+}
+
+body #ccm-dialog-loader-wrapper{
+	margin:-29px 0 0 -29px;
+	position:absolute;
+	top:50%;
+	left:50%;
 }

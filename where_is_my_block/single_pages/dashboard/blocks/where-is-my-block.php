@@ -83,7 +83,6 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 				echo $interface->submit(t('Search'), 'wimb', 'left', 'secondary');
 				?>
 				
-				<img src="/concrete/images/loader_intelligent_search.gif" width="43" height="11" id="ccm-wimb-loading" />
 			</div>
 		<!-- .row --></div>
 	<!-- #wimb --></form>

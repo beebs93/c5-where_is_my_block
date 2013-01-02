@@ -16,7 +16,7 @@ WhereIsMyBlock.Form = function(){
 		$ccmFooter = $('div.ccm-pane-footer'),
 		$form = $('div#ccm-dashboard-content form#wimb'),
 		$formSubmit = $form.find('input[type="submit"]')
-		$loader = $('img#ccm-wimb-loading'),
+		$loader = undefined,
 		$select = $form.find('select'),
 		$btidSelect = $select.filter('select[name="btid"]'),
 		$ippSelect = $select.filter('select[name="ipp"]'),
@@ -34,9 +34,14 @@ WhereIsMyBlock.Form = function(){
 	 * @return void
 	 *
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */
 	this.init = function(){
+		// Setup ajax spinner
+		$loader = $('<div id="ccm-dialog-loader-wrapper" class="ccm-ui"><img id="ccm-dialog-loader" src="' + CCM_IMAGE_PATH + '/throbber_white_32.gif" /></div>');
+
+		$('body').append($loader);
+
 		// Interrupt the normal form submission so we can use our custom method
 		$form.on('submit', function(e){
 			$refreshInput.val(1);
