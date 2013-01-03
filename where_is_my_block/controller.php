@@ -16,7 +16,7 @@ class WhereIsMyBlockPackage extends Package{
 	 * @since v0.9.0
 	 */
 	public function getPackageDescription(){
-		return t('Lists the pages that contain a specific block type');
+		return t('Lists the pages that contain a specific block type.');
 	}
 	
 	
