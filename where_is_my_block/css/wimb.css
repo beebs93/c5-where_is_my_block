@@ -35,6 +35,10 @@
 	clear:both;
 }
 
+div.ccm-ui span.help-block{
+	margin-bottom:0;
+}
+
 div.ccm-ui .pagination li.ccm-pagination-ellipses.disabled a{
 	cursor:pointer;
 }
