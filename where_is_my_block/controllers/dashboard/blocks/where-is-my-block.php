@@ -68,7 +68,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
 		$this->addHeaderItem($strJs);
-		$this->addHeaderItem($objHh->javascript('wimb.js', 'where_is_my_block'));
+		$this->addHeaderItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
 		
 		parent::on_start();
 	}
