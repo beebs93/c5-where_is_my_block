@@ -174,6 +174,8 @@ WhereIsMyBlock.Form = function(){
 	 */
 	this.parseResponse = function(oData){
 		var oData = oData || {};
+
+		//console.log(oData);
 		
 		// Remove any previous dynamic elements
 		$ccmBody.find('table.ccm-results-list').remove();
