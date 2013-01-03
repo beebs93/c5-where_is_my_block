@@ -59,15 +59,18 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 ?>
 
 <div class="ccm-pane-options clearfix">
-	<form id="wimb" method="get" action="<?php echo $objNh->getLinkToCollection($this->c, TRUE); ?>">
+	<form id="wimb" class="form-horizontal" method="get" action="<?php echo $objNh->getLinkToCollection($this->c, TRUE); ?>">
 		<div class="row ccm-pane-options-permanent-search">
 			<div class="span4">
-				<select name="btid"><?php echo $htmBtOpts; ?></select>
+				<select name="btid" class="ccm-input-select"><?php echo $htmBtOpts; ?></select>
 			</div>
 			
 			<div class="span3">
-				<label for="ipp"><?php echo t('# Per Page'); ?></label>
-				<select name="ipp"><?php echo $htmIppOpts; ?></select>
+				<label for="ipp" class="control-label"><?php echo t('# Per Page'); ?></label>
+				
+				<div class="controls">
+					<select name="ipp" class="ccm-input-select"><?php echo $htmIppOpts; ?></select>
+				</div>
 			</div>
 			
 			<div class="span4">
@@ -80,7 +83,7 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 				echo $objFh->hidden('ccm_paging_p', $arrFormOpts['ccm_paging_p'] ? $arrFormOpts['ccm_paging_p'] : 1);
 				echo $objFh->hidden('refresh', 1);
 
-				echo $interface->submit(t('Search'), 'wimb', 'left', 'secondary');
+				echo $interface->submit(t('Search'), 'wimb', 'left', 'ccm-input-submit secondary');
 				?>
 				
 			</div>

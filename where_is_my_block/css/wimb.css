@@ -1,6 +1,5 @@
 #wimb select[name="ipp"]{
 	width:65px;
-	margin-left:10px;
 }
 
 #wimb #ccm-submit-wimb{
@@ -34,6 +33,10 @@
 
 .ccm-pane-body hr{
 	clear:both;
+}
+
+div.ccm-ui .pagination li.ccm-pagination-ellipses.disabled a{
+	cursor:pointer;
 }
 
 body #ccm-dialog-loader-wrapper{
