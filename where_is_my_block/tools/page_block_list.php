@@ -55,7 +55,7 @@ try{
 	if(!is_numeric($intSearchBtId) || $intSearchBtId < 0){
 		$htmError = $objController->getAlert(t('...Really?'), 'error');
 	}elseif($intSearchBtId == 0){
-		$htmError = $objController->getAlert(t('You need to select a block type to search for'), 'warning');
+		$htmError = $objController->getAlert(t('You need to select a block type to search for'), 'warn');
 	}elseif(!$objController->isAllowedBlockTypeId($intSearchBtId)){
 		$htmError = $objController->getAlert(t('You cannot search for that block type'), 'error');
 	}

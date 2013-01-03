@@ -55,7 +55,7 @@ $htmHelpToolTip = $objPkg->getPackageDescription();
 $htmHelpToolTip .= '<br /><br />' . $strViewPermText;
 $htmHelpToolTip .= strlen($htmClearCacheText) > 0 ? ('<br /><br />' . $htmClearCacheText) : '';
 
-echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpToolTip, 'span16', FALSE);
+echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpToolTip, 'span12', FALSE);
 ?>
 
 <div class="ccm-pane-options clearfix">

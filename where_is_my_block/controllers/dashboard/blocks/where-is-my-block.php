@@ -99,26 +99,47 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	/**
 	 * Returns the HTML of a Twitter Bootstrap'd alert message
 	 * 
-	 * @param string $strMsg - Alert message
-	 * @param string $strSeverity - Severity level
+	 * @param mixed $message - Single message string or an array of error message strings
+	 * @param string $strSeverity - Severity level ("success", "info", "warn" or "error") - defaults to "info"
 	 * @return string
 	 * 
 	 * @author Brad Beebe
 	 * @since v0.9.0
+	 * @since v0.9.0.9 	- Changed allowable $message variable types
+	 *        			- Changed HTML structure to follow c5 v5.6.0.2 alert message standards
 	 */	
-	public function getAlert($strMsg, $strSeverity = 'info'){
-		$strMsg = $this->helperObjects['text']->specialchars((string) $strMsg);
-		
-		$tmpAlert = '
-		<div class="ccm-ui" id="ccm-dashboard-result-message">
-			<div class="row">
-				<div class="span16">
-					<div class="alert-message %2$s">%1$s</div>
-				</div>
-			</div>
-		</div>';
-		
-		return preg_replace('/[\r\n\t]/', '', sprintf($tmpAlert, $strMsg, (string) $strSeverity));
+	public function getAlert($message, $strSeverity = 'info'){
+		$tmplMsg = '<div class="alert alert-%2$s"><button type="button" class="close" data-dismiss="alert">×</button>%1$s</div>';
+
+		// Normalize severity level
+		if(!in_array($strSeverity, array('success', 'info', 'warn', 'error'))){
+			$strSeverity = 'info';
+		}
+
+		$htmMsg = '<div class="ccm-ui" id="ccm-dashboard-result-message">';
+		$htmMsg .= '<div class="row"><div class="span12">';
+
+		// If a single message string
+		if(is_string($message)){
+			$strMsg = nl2br($this->helperObjects['text']->entities($message));
+
+			$htmMsg .= sprintf($tmplMsg, $strMsg, $strSeverity);
+		// If an array of message strings
+		}elseif(is_array($message)){
+			foreach($message as $strMsg){
+				$strMsg = nl2br($this->helperObjects['text']->entities($strMsg));
+
+				$htmMsg .= sprintf($tmplMsg, $strMsg, $strSeverity);
+			}
+		// If some crazy voodoo I have not accounted for, then return an empty string.
+		}else{
+			return '';
+		}
+
+		$htmMsg .= '</div></div>';
+		$htmMsg .= '</div>';
+
+		return $htmMsg;
 	}	
 	
 	
