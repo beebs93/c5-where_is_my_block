@@ -12,7 +12,6 @@ WhereIsMyBlock.Form = function(){
 	var _this = this,
 		$container = $('div#ccm-dashboard-content > div.container'),
 		$ccmBody = $('div.ccm-pane-body'),
-		$overlay = $('div#bodyOverlay'),
 		$ccmFooter = $('div.ccm-pane-footer'),
 		$form = $('div#ccm-dashboard-content form#wimb'),
 		$formSubmit = $form.find('input[type="submit"]')
