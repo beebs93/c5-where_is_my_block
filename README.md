@@ -21,6 +21,11 @@ Installation
 - Install the package via Dashboard&rarr;Install.
 - Access the search form via Dashboard&rarr;Stacks &amp; Blocks&rarr;Where Is My Block
 
+Roadmap/Future features
+-------
+- Translations (any language I can get my hands on)
+- Popup modal window when clicking a page in results table (similiar to core "Page Search" dashboard page)
+
 License
 -------
 Copyright (c) 2012 Brad Beebe
