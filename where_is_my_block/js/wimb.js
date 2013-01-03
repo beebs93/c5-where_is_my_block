@@ -4,7 +4,7 @@
  * Handles adjusting and auto-submitting the form upon user interaction
  *
  * @author Brad Beebe
- * @since v0.9.0.8
+ * @since v0.9.0
  */
 (function($){
 
@@ -129,7 +129,7 @@ WhereIsMyBlock.Form = function(){
 	 * @return void
 	 *
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */
 	this.submitForm = function(){
 		$formSubmit.attr('disabled', 'disabled');
@@ -170,7 +170,7 @@ WhereIsMyBlock.Form = function(){
 	 * @return void
 	 *
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */
 	this.parseResponse = function(oData){
 		var oData = oData || {};

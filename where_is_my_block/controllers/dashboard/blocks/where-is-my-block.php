@@ -15,7 +15,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @return void
 	 *
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */
 	public function __construct(){
 		parent::__construct();
@@ -54,7 +54,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @return void
 	 * 
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */
 	public function on_start(){
 		$objUh = Loader::helper('concrete/urls');
@@ -80,7 +80,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @return void
 	 * 
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */
 	public function view(){
 		// Add any core helpers, models, etc. in the view scope
@@ -104,7 +104,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @return string
 	 * 
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */	
 	public function getAlert($strMsg, $strSeverity = 'info'){
 		$strMsg = $this->helperObjects['text']->specialchars((string) $strMsg);
@@ -129,7 +129,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @return boolean
 	 * 
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */
 	public function isAllowedBlockTypeId($btId){
 		return ((is_numeric($btId)) && $this->arrAllowedBtIds[(int) $btId] === TRUE);
@@ -143,7 +143,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @return boolean
 	 * 
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */
 	public function isValidSortableCol($strColumn){
 		return in_array((string) $strColumn, $this->arrSortableCols);
@@ -157,7 +157,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @return boolean
 	 * 
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */
 	public function isValidItemsPerPage($ipp){
 		return (is_numeric($ipp)) && in_array((int) $ipp, $this->arrItemsPerPage);

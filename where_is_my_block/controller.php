@@ -13,7 +13,7 @@ class WhereIsMyBlockPackage extends Package{
 	 * @return string
 	 *
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */
 	public function getPackageDescription(){
 		return t('Lists the pages that contain a specific block type');
@@ -26,7 +26,7 @@ class WhereIsMyBlockPackage extends Package{
 	 * @return string
 	 *
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */	
 	public function getPackageName(){
 		// It took a LOT of willpower not to name this "Duuuude, where's my block?"
@@ -40,7 +40,7 @@ class WhereIsMyBlockPackage extends Package{
 	 * @return void
 	 *
 	 * @author Brad Beebe
-	 * @since v0.9.0.8
+	 * @since v0.9.0
 	 */		
 	public function install(){
 		Loader::model('single_page');
