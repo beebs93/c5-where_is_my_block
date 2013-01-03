@@ -25,7 +25,8 @@ WhereIsMyBlock.Form = function(){
 		$pagingInput = $form.find('input[name="ccm_paging_p"]'),
 		$refreshInput = $form.find('input[name="refresh"]'),
 		$tokenInput = $form.find('input[name="ccm_token"]'),
-		oQueryVars = {};
+		oQueryVars = {},
+		bIsAjaxing = false;
 
 
 	/**
@@ -71,6 +72,10 @@ WhereIsMyBlock.Form = function(){
 		// Add listeners to any table heading links that will adjust the sorting inputs
 		// and re-submit the form
 		$ccmBody.on('click', 'table#ccm-where-is-my-block th a', function(e){
+			if(bIsAjaxing !== false){
+				return false;
+			}
+
 			var sCurrentSort = $sortInput.val(),
 				sCurrentDir = $dirInput.val(),
 				sNewSort = $(this).get(0).getAttribute('data-sort'),
@@ -78,7 +83,9 @@ WhereIsMyBlock.Form = function(){
 				
 			$sortInput.val(sNewSort);
 			
-			if(sCurrentSort == sNewSort) $dirInput.val(sNewDir);
+			if(sCurrentSort == sNewSort){
+				$dirInput.val(sNewDir);
+			}
 			
 			$refreshInput.val(0);
 
@@ -91,6 +98,11 @@ WhereIsMyBlock.Form = function(){
 			var $this = $(this),
 				aMatch = /ccm_paging_p=(\d+)/.exec(this.href),
 				iPage;
+
+			// Prevent "disabled" links from firing requests OR if form is currently ajaxing
+			if($this.parent().hasClass('disabled') || bIsAjaxing !== false){
+				return false;
+			}
 			
 			// Extract the page number or find the average if clicking on a '...' link
 			if((aMatch instanceof Array) && aMatch.length > 1){
@@ -132,8 +144,22 @@ WhereIsMyBlock.Form = function(){
 	 * @since v0.9.0
 	 */
 	this.submitForm = function(){
+		if(bIsAjaxing === true){
+			return false;
+		}
+
+		bIsAjaxing = true;
+
 		$formSubmit.attr('disabled', 'disabled');
+		$btidSelect.attr('disabled', 'disabled');
+		$ippSelect.attr('disabled', 'disabled');
+		
 		$loader.show();
+
+		var $results = $('table#ccm-where-is-my-block');
+		if($results.length){
+			$results.css({opacity: 0.4});
+		}
 		
 		// Clear any previous alerts/messages
 		$('div#ccm-dashboard-result-message').remove();
@@ -228,22 +254,27 @@ WhereIsMyBlock.Form = function(){
 			sTable += '</tbody></table>';
 			
 			// Add results and pagination to pane body
-			var sPgnInfo = oData.response.pgnInfo;
+			var sPgnInfo = oData.response.pgnInfo,
 				sPgn = oData.response.pgnHtml;
 			
-			if(sPgnInfo && sPgnInfo.length > 0) sTable += '<div class="ccm-paging-top">' + sPgnInfo + '</div>';
-			if(sPgn && sPgn.length > 0) $ccmFooter.prepend(sPgn);
+			if(sPgnInfo && sPgnInfo.length > 0){
+				sTable += '<div class="ccm-paging-top">' + sPgnInfo + '</div>';
+			}
+			
+			if(sPgn && sPgn.length > 0){
+				$ccmFooter.prepend(sPgn);
+			}
 			
 			$ccmBody.prepend(sTable);
 		// Failure
 		}else{
 			var $alert,
 				$message;
-			
+
 			if(oData.alert && oData.alert.length > 0){
 				$alert = $(oData.alert);
 				$alert.css('display', 'block');
-				
+
 				$container.prepend($alert);
 			}
 			
@@ -254,7 +285,12 @@ WhereIsMyBlock.Form = function(){
 		}
 		
 		$formSubmit.removeAttr('disabled');
+		$btidSelect.removeAttr('disabled');
+		$ippSelect.removeAttr('disabled');
+
 		$loader.hide();
+
+		bIsAjaxing = false;
 	};
 };
 

@@ -92,26 +92,10 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 <!-- .ccm-pane-options --></div>
 
 <div class="ccm-pane-body">
-	<table cellspacing="0" cellpadding="0" border="0" class="ccm-results-list" id="ccm-where-is-my-block">
-		<thead>
-			<tr>
-				<th>Page Name</th>
-				<th>Page Path</th>
-				<th>Instances</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr class="ccm-list-record">
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-			</tr>
-		</tbody>
-	</table>
-	
 	<hr />
-	
+
 	<span class="help-block"><?php echo $strViewPermText ?></span>
+	
 	<span class="help-block"><?php echo $htmClearCacheText; ?></span>
 <!-- .ccm-pane-body --></div>
 	
