@@ -8,18 +8,17 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	protected $arrSortableCols = array('page_name', 'page_path', 'instances');
 	public $helpers = array('concrete/dashboard', 'form', 'navigation', 'text');
 	
-		
+	
 	/**
-	 * Constructor
+	 * Get a list of all installed block types and extract the pertinent
+	 * information from each block type object
 	 *
 	 * @return void
 	 *
 	 * @author Brad Beebe
-	 * @since v0.9.0
+	 * @since v0.9.1.1
 	 */
-	public function __construct(){
-		parent::__construct();
-		
+	protected function setAllowedBlockTypes(){
 		// Get a list of all installed block types and extract the pertinent
 		// information from each block type object
 		$arrAllBlockTypes = (array) BlockTypeList::getInstalledList();
@@ -33,6 +32,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 			);
 			
 			$this->arrBlockTypes[] = $arrBtInfo;
+			
 			// Keep a separate array that records the valid block type IDs
 			// since running usort on arrays resets their keys
 			$this->arrAllowedBtIds[$arrBtInfo['id']] = TRUE;
@@ -45,6 +45,19 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 			}
 			return strnatcmp($a["category"], $b["category"]);
 		'));
+	}
+
+
+	/**
+	 * Determines if the list of allowed block types has been generated
+	 * 
+	 * @return boolean
+	 *
+	 * @author Brad Beebe
+	 * @since v0.9.1.1
+	 */
+	protected function isAllowedBlockTypesSet(){
+		return count($this->arrAllBlockTypes) > 0 && count($this->arrAllowedBtIds) > 0;
 	}
 	
 	
@@ -83,6 +96,10 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @since v0.9.0
 	 */
 	public function view(){
+		if(!$this->isAllowedBlockTypesSet()){
+			$this->setAllowedBlockTypes();
+		}
+
 		// Add any core helpers, models, etc. in the view scope
 		$this->set('objDh', $this->helperObjects['concrete_dashboard']);
 		$this->set('objFh', $this->helperObjects['form']);
@@ -153,6 +170,10 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @since v0.9.0
 	 */
 	public function isAllowedBlockTypeId($btId){
+		if(!$this->isAllowedBlockTypesSet()){
+			$this->setAllowedBlockTypes();
+		}
+
 		return ((is_numeric($btId)) && $this->arrAllowedBtIds[(int) $btId] === TRUE);
 	}
 	
