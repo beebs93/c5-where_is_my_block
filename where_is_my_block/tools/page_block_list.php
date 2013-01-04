@@ -109,9 +109,11 @@ try{
 		$arrAllowedPages = (array) $objPl->get();
 
 		$objPerm = new Permissions($objHome);
-		if($objPerm->canRead()) array_unshift($arrAllowedPages, $objHome);
+		if($objPerm->canRead()){
+			array_unshift($arrAllowedPages, $objHome);
+		}
 
-		// For any page that has at least one of the block type we are searching for, get
+		// For any page that has at least one of the block types we are searching for, get
 		// the page name, path and total number of instances while also recording the page ID
 		$arrPageBlockInfo = array();
 		$arrPageIds = array();
@@ -180,7 +182,7 @@ try{
 		}
 	}
 
-	// Convert the list of page IDs into a query string
+	// Convert the list of page IDs into a SQL query string
 	$strFilter = '(p1.cID IN(' . implode(',', $arrPageIds) . '))';
 
 	// Get a paginated list of pages using the page IDs from the first PageList request
