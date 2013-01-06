@@ -44,3 +44,8 @@
 
 0.9.1.1 - January 2013
 - Moved unnecessary code from single page controller's constructor
+
+0.9.1.2 - January 2013
+- Optimzed method of retrieving a Page's Block objects to speed up processing time
+- Display a message to the user upon any Ajax errors
+- Removed checking individual block permissions (increases performance)
