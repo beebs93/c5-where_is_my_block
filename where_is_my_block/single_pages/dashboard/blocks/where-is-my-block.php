@@ -9,7 +9,7 @@ $arrItemsPerPage = (array) $arrItemsPerPage;
 $arrFormOpts = isset($_SESSION['wimb_form_options']) ? (array) $_SESSION['wimb_form_options'] : array();
 
 // Get any help blocks (ensure user can view any links beforehand)
-$strViewPermText = t('Some pages/blocks may be omitted due to your current viewing permissions.');
+$strViewPermText = t('Some pages may be omitted due to your current viewing permissions.');
 
 $objCache = Page::getByPath('/dashboard/system/optimization/clear_cache');
 $objPerm = new Permissions($objCache);

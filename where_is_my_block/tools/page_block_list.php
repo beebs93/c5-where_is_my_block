@@ -133,18 +133,13 @@ try{
 				$strPath = BASE_URL;
 			}
 			
-			$arrPageBlocks = (array) $objPage->getBlocks(FALSE);
+			$arrPageBlockIds = $objController->getPageBlockIds($objPage, $intSearchBtId);
 			
-			foreach($arrPageBlocks as $objBlock){
-				if((!$objBlock instanceof Block) || $objBlock->btID != $intSearchBtId){
+			foreach($arrPageBlockIds as $intBlockId){
+				if($intBlockId < 1){
 					continue;
 				}
-				
-				$objBlkPerm = new Permissions($objBlock);
-				if(!$objBlkPerm->canRead()){
-					continue;
-				}
-				
+
 				if(is_array($arrPageBlockInfo[$strPath])){
 					$arrPageBlockInfo[$strPath]['instances']++;
 
