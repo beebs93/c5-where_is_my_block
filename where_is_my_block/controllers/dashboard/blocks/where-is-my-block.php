@@ -116,50 +116,55 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 
 
 	/**
-	 * Returns the HTML of a Twitter Bootstrap'd alert message
-	 * 
-	 * @param mixed $message - Single message string or an array of error message strings
-	 * @param string $strSeverity - Severity level ("success", "info", "warn" or "error") - defaults to "info"
-	 * @return string
-	 * 
+	 * Fetches all of the blocks IDs of a specific block type ID on a specific page
+	 *
+	 * @see Concrete5_Model_Collection->getBlocks
+	 * @param Page $objPage - Any page
+	 * @param int $intBtId - A block type ID
+	 * @return array
+	 *
 	 * @author Brad Beebe
-	 * @since v0.9.0
-	 * @since v0.9.0.9 	- Changed allowable $message variable types
-	 *        			- Changed HTML structure to follow c5 v5.6.0.2 alert message standards
-	 */	
-	public function getAlert($message, $strSeverity = 'info'){
-		$tmplMsg = '<div class="alert alert-%2$s"><button type="button" class="close" data-dismiss="alert">×</button>%1$s</div>';
+	 * @since v0.9.1.2
+	 */
+	public function getPageBlockIds(Page $objPage, $intBtId){
+		$arrBlockIds = array();
 
-		// Normalize severity level
-		if(!in_array($strSeverity, array('success', 'info', 'warn', 'error'))){
-			$strSeverity = 'info';
-		}
+		$db = Loader::db();
+		
+		$arrValues = array($objPage->getCollectionID(), $objPage->getVersionID(), (int) $intBtId);
+		
+	 	// While there exists a native method to retrieve all block object of a specific page,
+	 	// it causes a weird memory leak when c5 caching is enabled so we have to do it manually
+		$sqlBlocks = '
+		SELECT
+			Blocks.bID
+		FROM
+			CollectionVersionBlocks
+		INNER JOIN
+			Blocks ON (CollectionVersionBlocks.bID = Blocks.bID)
+		INNER JOIN
+			BlockTypes ON (Blocks.btID = BlockTypes.btID)
+		WHERE
+			CollectionVersionBlocks.cID = ?
+				AND	
+			(CollectionVersionBlocks.cvID = ?
+				OR
+			CollectionVersionBlocks.cbIncludeAll = 1)
+				AND
+			Blocks.btID = ?
+		ORDER BY
+			CollectionVersionBlocks.cID ASC';
+		
+		$arrResults = $db->GetAll($sqlBlocks, $arrValues);
 
-		$htmMsg = '<div class="ccm-ui" id="ccm-dashboard-result-message">';
-		$htmMsg .= '<div class="row"><div class="span12">';
-
-		// If a single message string
-		if(is_string($message)){
-			$strMsg = nl2br($this->helperObjects['text']->entities($message));
-
-			$htmMsg .= sprintf($tmplMsg, $strMsg, $strSeverity);
-		// If an array of message strings
-		}elseif(is_array($message)){
-			foreach($message as $strMsg){
-				$strMsg = nl2br($this->helperObjects['text']->entities($strMsg));
-
-				$htmMsg .= sprintf($tmplMsg, $strMsg, $strSeverity);
+		if(is_array($arrResults)){
+			foreach($arrResults as $arrBlock){
+				$arrBlockIds[] = (int) $arrBlock['bID'];
 			}
-		// If some crazy voodoo I have not accounted for, then return an empty string.
-		}else{
-			return '';
 		}
 
-		$htmMsg .= '</div></div>';
-		$htmMsg .= '</div>';
-
-		return $htmMsg;
-	}	
+		return $arrBlockIds;
+	}
 	
 	
 	/**
@@ -205,5 +210,5 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 */
 	public function isValidItemsPerPage($ipp){
 		return (is_numeric($ipp)) && in_array((int) $ipp, $this->arrItemsPerPage);
-	}		
+	}
 }

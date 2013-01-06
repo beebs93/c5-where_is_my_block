@@ -6,6 +6,8 @@ $objJh = Loader::helper('json');
 $objVh = Loader::helper('validation/token');
 $objNh = Loader::helper('navigation');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');
+
+$objResp = new stdClass();
 $objUser = new User();
 $blnCacheEnabled = (defined('ENABLE_CACHE') && ENABLE_CACHE);
 
@@ -51,20 +53,22 @@ try{
 	);
 
 	// Check for a valid block type ID
-	$htmError = FALSE;
+	$strError = '';
 	if(!is_numeric($intSearchBtId) || $intSearchBtId < 0){
-		$htmError = $objController->getAlert(t('...Really?'), 'error');
+		$strError = t('...Really?');
+		$strSeverity = 'error';
 	}elseif($intSearchBtId == 0){
-		$htmError = $objController->getAlert(t('You need to select a block type to search for'), 'warn');
+		$strError = t('You need to select a block type to search for');
+		$strSeverity = 'warn';
 	}elseif(!$objController->isAllowedBlockTypeId($intSearchBtId)){
-		$htmError = $objController->getAlert(t('You cannot search for that block type'), 'error');
+		$strError = t('You cannot search for that block type');
+		$strSeverity = 'error';
 	}
 
 	// Return any errors
-	if($htmError !== FALSE){
-		$objResp = new stdClass();
-		$objResp->status = 'error';
-		$objResp->alert = $htmError;
+	if(strlen($strError)){
+		$objResp->status = $strSeverity;
+		$objResp->alert = $strError;
 		$objResp->message = t('There was an error with your request');
 		
 		header('Content-type: application/json');
@@ -157,12 +161,11 @@ try{
 			}
 		}
 
-		// Return error message if no pages found that contain the specific block type
+		// Return warning message if no pages found that contain the specific block type
 		if(count($arrPageIds) == 0){
-			$objResp = new stdClass();
-			$objResp->status = 'error';
-			$objResp->alert = '';
-			$objResp->message = t('No pages contain that block type');
+			$objResp->status = 'warn';
+			$objResp->alert = t('No pages contain that block type');
+			$objResp->message = '';
 			
 			header('Content-type: application/json');
 			echo $objJh->encode($objResp);
@@ -236,7 +239,6 @@ try{
 		$strPgnInfo = t('Viewing 1 to ' . $intCurrentRows . ' (' . $intCurrentRows . ' Total)');
 	}
 
-	$objResp = new stdClass();
 	$objResp->status = 'success';
 	$objResp->response = new stdClass();
 	$objResp->response->tblData = $arrPageBlockInfo;
@@ -247,9 +249,8 @@ try{
 	echo $objJh->encode($objResp);
 	exit;
 }catch(Exception $e){
-	$objResp = new stdClass();
 	$objResp->status = 'error';
-	$objResp->alert = $objController->getAlert($e->getMessage(), 'error');
+	$objResp->alert = $e->getMessage();
 	$objResp->message = t('There was an error with your request');
 	
 	header('Content-type: application/json');
