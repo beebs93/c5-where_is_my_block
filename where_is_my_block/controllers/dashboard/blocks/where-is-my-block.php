@@ -77,6 +77,8 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		<script type="text/javascript">
 		var WhereIsMyBlock = WhereIsMyBlock || {};
 		WhereIsMyBlock.URL_TOOL_PAGE_BLOCK_SEARCH = "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";
+		WhereIsMyBlock.TEXT_GENERAL_ERROR = "' . t('There was an error with your request') . '";
+		WhereIsMyBlock.TEXT_AJAX_ERROR = "' . t('An Ajax error occured: ') . '";
 		</script>';
 		
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));

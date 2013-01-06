@@ -147,13 +147,7 @@ WhereIsMyBlock.Form = function(){
 			return false;
 		}
 
-		bIsAjaxing = true;
-
-		$formSubmit.attr('disabled', 'disabled');
-		$btidSelect.attr('disabled', 'disabled');
-		$ippSelect.attr('disabled', 'disabled');
-		
-		$loader.show();
+		_this.setFormStatus('busy');
 
 		var $results = $('table#ccm-where-is-my-block');
 		if($results.length){
@@ -180,24 +174,60 @@ WhereIsMyBlock.Form = function(){
 		}
 		sQuery = sQuery.slice(0, sQuery.length - 1);
 		
-		$.get(WhereIsMyBlock.URL_TOOL_PAGE_BLOCK_SEARCH + sQuery, _this.parseResponse, 'json');
+		$.get(WhereIsMyBlock.URL_TOOL_PAGE_BLOCK_SEARCH + sQuery, _this.parseXhrSuccess, 'json').error(_this.parseXhrError);
 
 		//console.log(sQuery);
 	};
 
 
 	/**
-	 * Callback for the form submission Ajax call
-	 * Parses the JSON response and builds a results table (if successful)
-	 * and/or any status/error messages
+	 * Adjusts the form and any related elements based on status
+	 * 
+	 * @param string sStatus - A form status
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 * @since v0.9.1.2
+	 */
+	this.setFormStatus = function(sStatus){
+		switch(sStatus){
+			case 'ready':
+				$formSubmit.removeAttr('disabled');
+				$btidSelect.removeAttr('disabled');
+				$ippSelect.removeAttr('disabled');
+
+				$loader.hide();
+
+				bIsAjaxing = false;
+
+				break;
+
+			case 'busy':
+				bIsAjaxing = true;
+
+				$formSubmit.attr('disabled', 'disabled');
+				$btidSelect.attr('disabled', 'disabled');
+				$ippSelect.attr('disabled', 'disabled');
+				
+				$loader.show();
+
+				break;
+		}
+	};
+
+
+	/**
+	 * Callback for a successful form submission Ajax call
+	 * Parses the JSON response and builds a results table (if any)
 	 *
 	 * @param object oData - JSON callback object
 	 * @return void
 	 *
 	 * @author Brad Beebe
 	 * @since v0.9.0
+	 * @sicne v0.9.1.2 - Separated out the logic to display alerts/status messages
 	 */
-	this.parseResponse = function(oData){
+	this.parseXhrSuccess = function(oData){
 		var oData = oData || {};
 
 		//console.log(oData);
@@ -265,31 +295,80 @@ WhereIsMyBlock.Form = function(){
 			}
 			
 			$ccmBody.prepend(sTable);
-		// Failure
+		// Soft failure (e.g. Successful Ajax request, but nothing found)
 		}else{
-			var $alert,
-				$message;
-
-			if(oData.alert && oData.alert.length > 0){
-				$alert = $(oData.alert);
-				$alert.css('display', 'block');
-
-				$container.prepend($alert);
-			}
-			
-			if(oData.message && oData.message.length > 0){
-				$message = $('<h5 class="responseText">' + oData.message + '</h5>');
-				$ccmBody.prepend($message);
-			}
+			_this.displayMessagesToUser(oData);
 		}
 		
-		$formSubmit.removeAttr('disabled');
-		$btidSelect.removeAttr('disabled');
-		$ippSelect.removeAttr('disabled');
+		_this.setFormStatus('ready');
+	};
 
-		$loader.hide();
 
-		bIsAjaxing = false;
+	/**
+	 * Callback for an erroneous form submission Ajax call
+	 * Parses JSON response and displays any XHR errors
+	 *
+	 * @param object $xhr - jQuery XHR object
+	 * @param string sStatus - Error text status
+	 * @param object oException - Exception object
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 * @since v0.9.1.2
+	 */
+	this.parseXhrError = function($xhr, sStatus, oException){
+		var oOpts = {
+			status: 'error',
+			alert: WhereIsMyBlock.TEXT_AJAX_ERROR,
+			message: WhereIsMyBlock.TEXT_GENERAL_ERROR
+		};
+
+		if($xhr.responseText.length > 0){
+			oOpts.alert += $xhr.responseText.replace(/(<([^>]+)>)/ig, '');
+		}
+
+		_this.displayMessagesToUser(oOpts);
+
+		_this.setFormStatus('ready');
+	};
+
+
+	/**
+	 * Displays any alerts (wrapped in Twitter Bootstrap HTML) and/or
+	 * status messages to the user
+	 *
+	 * @param object oArgs - Argument object
+	 * (
+	 * 		@param string alert - A message to display as an alert (optional)
+	 * 		@param string message - A simple status message (optional)
+	 * )
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 * @since v0.9.1.2
+	 */
+	this.displayMessagesToUser = function(oArgs){
+		var sAlertTmpl,
+			$alert,
+			$message;
+
+		if(oArgs.alert && oArgs.alert.length > 0){
+			var sAlert = '<div class="ccm-ui" id="ccm-dashboard-result-message">';
+			sAlert += '<div class="row"><div class="span12">';
+			sAlert += '<div class="alert alert-' + oArgs.status + '"><button type="button" class="close" data-dismiss="alert">×</button>' + oArgs.alert + '</div>';
+			sAlert += '</div>';
+			sAlert += '</div></div>';
+
+			$alert = $(sAlert);
+			$alert.css('display', 'block');
+
+			$container.prepend($alert);
+		}
+		
+		if(oArgs.message && oArgs.message.length > 0){
+			$message = $('<h5 class="responseText">' + oArgs.message + '</h5>');
+			$ccmBody.prepend($message);
+		}
 	};
 };
 
