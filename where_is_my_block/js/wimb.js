@@ -95,11 +95,12 @@ WhereIsMyBlock.Form = function(){
 		// then submit
 		$ccmFooter.on('click', 'div.ccm-pagination a', function(e){
 			var $this = $(this),
+				$parent = $this.parent(),
 				aMatch = /ccm_paging_p=(\d+)/.exec(this.href),
 				iPage;
 
 			// Prevent "disabled" links from firing requests OR if form is currently ajaxing
-			if($this.parent().hasClass('disabled') || bIsAjaxing !== false){
+			if(($parent.hasClass('disabled') && !$parent.hasClass('ccm-pagination-ellipses')) || bIsAjaxing !== false){
 				return false;
 			}
 			
