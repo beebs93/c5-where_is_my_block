@@ -9,13 +9,17 @@ This is the latest <em>development</em> branch of the plugin.
 
 <strong>Use this version at your own risk</strong> as it may contain bugs that may hinder/break your concrete5 installation.
 
-View the [tags section](https://github.com/beebs93/c5-where_is_my_block/tags) to download the latest or previous <em>stable</em> releases.
+&nbsp;
 
-\- OR -
+-----
 
-<del>Download/install direcotly from the concrete5 Marketplace.</del> (<em>not released yet</em>)
+Download <em>stable</em> releases from the [concrete5 Marketplace](http://www.concrete5.org/marketplace/addons/where-is-my-block/) or the [tags section](https://github.com/beebs93/c5-where_is_my_block/tags).
 
-Installation
+-----
+
+&nbsp;
+
+Manual installation
 ------------
 - Upload the <strong>where_is_my_block</strong> folder to your top level <strong>/packages</strong> directory
 - Install the package via Dashboard&rarr;Install.
