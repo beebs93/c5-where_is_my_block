@@ -50,5 +50,5 @@
 - Display a message to the user upon any Ajax errors
 - Removed checking individual block permissions (increases performance)
 
-1.0 - January 2013
+1.0.0.0 - January 2013
 - Approved by concrete5 Peer Review Board
