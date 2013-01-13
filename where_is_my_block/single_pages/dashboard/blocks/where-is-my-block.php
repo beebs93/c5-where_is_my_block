@@ -33,7 +33,7 @@ foreach($arrBlockTypes as $keyI => $arrBt){
 			$htmBtOpts .= '</optgroup>';
 		}
 		
-		$htmBtOpts .= '<optgroup label="' . t($objTh->unhandle($strOptGroup) . ' Blocks') . '">';
+		$htmBtOpts .= '<optgroup label="' . t('%s Blocks', t($objTh->unhandle($strOptGroup))) . '">';
 	}
 	
 	$strSelected = $arrFormOpts['btid'] == $arrBt['id'] ? ' selected' : '';
