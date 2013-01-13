@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: concrete 5.6.0.2 | v1.0\n"
 "Report-Msgid-Bugs-To: remo.laubacher@gmail.com\n"
-"POT-Creation-Date: 2013-01-13 16:29+0100\n"
-"PO-Revision-Date: 2013-01-13 16:29+0100\n"
+"POT-Creation-Date: 2013-01-13 18:45+0100\n"
+"PO-Revision-Date: 2013-01-13 18:45+0100\n"
 "Last-Translator: remo.laubacher@gmail.com\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -42,16 +42,18 @@ msgstr "Suchen"
 msgid "Some pages may be omitted due to your current viewing permissions."
 msgstr "Einige Seiten werden möglicherweise aufgrund von eingeschränkten Berechtigungen nicht angezeigt."
 
-#: /packages/where_is_my_block/controllers/dashboard/blocks/where-is-my-block.php:79
-#: /packages/where_is_my_block/tools/page_block_list.php:71
 #: /packages/where_is_my_block/tools/page_block_list.php:248
+#: /packages/where_is_my_block/tools/page_block_list.php:71
+#: /packages/where_is_my_block/controllers/dashboard/blocks/where-is-my-block.php:79
 msgid "There was an error with your request"
 msgstr "Fehler bei der Anfrage"
 
+#: /packages/where_is_my_block/tools/page_block_list.php:233
 #, php-format
 msgid "Viewing 1 to %d (%d Total)"
 msgstr "Zeige Seite 1 bis %d (Total %d)"
 
+#: /packages/where_is_my_block/tools/page_block_list.php:228
 #, php-format
 msgid "Viewing %d to %d (%d Total)"
 msgstr "Zeige Seite %d bis %d (Total %d)"
@@ -84,3 +86,12 @@ msgstr "Name"
 #, php-format
 msgid "%s Blocks"
 msgstr "%s Blöcke"
+
+msgid "Instances"
+msgstr "Instanzen"
+
+msgid "Page Name"
+msgstr "Seitennamen"
+
+msgid "Page Path"
+msgstr "Pfad"
