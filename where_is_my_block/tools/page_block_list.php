@@ -1,10 +1,8 @@
-<?php
+<?php 
 defined('C5_EXECUTE') or die(_('Access Denied.'));
 
-Loader::model('page_list');
 $objJh = Loader::helper('json');
 $objVh = Loader::helper('validation/token');
-$objNh = Loader::helper('navigation');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');
 
 $objResp = new stdClass();
@@ -76,12 +74,15 @@ try{
 		exit;
 	}
 
+	// Set search page instance ID
+	$strSearchInstance = 'page' . time();
+
 	// Check for cached data (if we're not refreshing it)
 	$arrPageBlockInfo = array();
-	$arrPageIds = array();
+	$arrPagePerms = array();
 
 	$keyPgBlkInfo = 'pageBlockInfo_' . $objUser->uID;
-	$keyPgIds = 'pageIds_' . $objUser->uID;
+	$keyPgPerm = 'pagePerm_' . $objUser->uID;
 
 	if(!$blnCacheEnabled){
 		Cache::enableCache();
@@ -89,10 +90,10 @@ try{
 
 	if($blnRefresh === TRUE){
 		Cache::delete('wimb', $keyPgBlkInfo);
-		Cache::delete('wimb', $keyPgIds);
+		Cache::delete('wimb', $keyPgPerm);
 	}else{
 		$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', $keyPgBlkInfo, FALSE)) ? $cachePgBlkInfo : array();
-		$arrPageIds = ($cachePageIds = Cache::get('wimb', $keyPgIds, FALSE)) ? $cachePageIds : array();
+		$arrPagePerms = ($cachePagePerm = Cache::get('wimb', $keyPgPerm, FALSE)) ? $arrPagePerms : array();
 	}
 
 	if(!$blnCacheEnabled){
@@ -100,7 +101,14 @@ try{
 	}
 
 	// Refresh cache (if needed)
-	if(count($arrPageBlockInfo) == 0 || count($arrPageIds) == 0 || $blnRefresh === TRUE){
+	if(!count($arrPageBlockInfo) || !count($arrPagePerms) || $blnRefresh === TRUE){
+		// Load any required classes
+		Loader::model('page_list');
+		$objTh = Loader::helper('text');
+		$objNh = Loader::helper('navigation');
+		$objDsh = Loader::helper('concrete/dashboard/sitemap');
+		$objDh = Loader::helper('concrete/dashboard');
+
 		// Get a list of all non-aliased pages viewable by the current user
 		$objHome = Page::getByID(HOME_CID);
 		$strHomePath = (string) $objHome->getCollectionPath();
@@ -118,9 +126,11 @@ try{
 		}
 
 		// For any page that has at least one of the block types we are searching for, get
-		// the page name, path and total number of instances while also recording the page ID
+		// the page name, path and total number of instances while also recording any page
+		// permission properties needed for the ccm-page-menu modal
 		$arrPageBlockInfo = array();
-		$arrPageIds = array();
+		$arrPagePerms = array();
+
 		foreach($arrAllowedPages as $objPage){
 			if((!is_object($objPage)) || !$objPage instanceof Page || $objPage->error){
 				continue;
@@ -128,7 +138,7 @@ try{
 			
 			$intPageId = $objPage->getCollectionID();
 			$strName = $objPage->getCollectionName();
-			$strPath = $objNh->getLinkToCollection($objPage, TRUE);
+			$strPath = $objNh->getLinkToCollection($objPage, FALSE);
 			if(strlen($strPath) == 0){
 				$strPath = BASE_URL;
 			}
@@ -140,24 +150,65 @@ try{
 					continue;
 				}
 
-				if(is_array($arrPageBlockInfo[$strPath])){
-					$arrPageBlockInfo[$strPath]['instances']++;
+				if(is_array($arrPageBlockInfo[$intPageId])){
+					$arrPageBlockInfo[$intPageId]['instances']++;
 
 					continue;
 				}
 
-				$arrPageBlockInfo[$strPath] = array(
+				$arrPageBlockInfo[$intPageId] = array(
 					'page_name' => $strName,
 					'page_path' => $strPath,
-					'instances' => 1
+					'instances' => 1,
+					'xPageId' => $intPageId
 				);
+
+				// Get permissions info
+				$objPagePerm = new Permissions($objPage);
+				$objCt = CollectionType::getByID($objPage->getCollectionTypeID());
 				
-				$arrPageIds[] = $intPageId;
+				$arrPagePerms[$intPageId] = array(
+					'cName="' . $objTh->entities($strName) . '"',
+					'cID="' . $intPageId . '"',
+					'cNumChildren="' . $objPage->getNumChildren() . '"',
+					'sitemap-select-callback=""',
+					'sitemap-select-mode=""',
+					'sitemap-instance-id="' . $strSearchInstance . '"',
+					'sitemap-display-mode=""',
+					'tree-node-cancompose=""'
+				);
+
+				$blnCanEditPageProperties = $objPagePerm->canEditPageProperties();
+				$blnCanEditPageSpeedSettings = $objPagePerm->canEditPageSpeedSettings();
+				$blnCanEditPagePermissions = $objPagePerm->canEditPagePermissions();
+				$blnCanEditPageDesign = ($objPagePerm->canEditPageTheme() || $objPagePerm->canEditPageType());
+				$blnCanViewPageVersions = $objPagePerm->canViewPageVersions();
+				$blnCanDeletePage = $objPagePerm->canDeletePage();
+				
+				// We prevent the following permissions since detecting when their respective
+				// modals are finished is too difficult to accurately determine
+				$blnCanAddSubpages = false;
+				$blnCanAddExternalLinks = false;
+
+				$arrPerms = array(
+					'canEditPageProperties' => $blnCanEditPageProperties,
+					'canEditPageSpeedSettings' => $blnCanEditPageSpeedSettings,
+					'canEditPagePermissions' => $blnCanEditPagePermissions,
+					'canEditPageDesign' => $blnCanEditPageDesign,
+					'canViewPageVersions' => $blnCanViewPageVersions,
+					'canDeletePage' => $blnCanDeletePage,
+					'canAddSubpages' => $blnCanAddSubpages,
+					'canAddExternalLinks' => $blnCanAddExternalLinks
+				);
+
+				$arrNodePermStrings = array_filter(explode(' ', $objDsh->getPermissionsNodes($arrPerms)));
+				
+				$arrPagePerms[$intPageId] = array_merge($arrPagePerms[$intPageId], $arrNodePermStrings);
 			}
 		}
 
 		// Return warning message if no pages found that contain the specific block type
-		if(count($arrPageIds) == 0){
+		if(!count($arrPageBlockInfo)){
 			$objResp->status = 'warn';
 			$objResp->alert = t('No pages contain that block type');
 			$objResp->message = '';
@@ -172,8 +223,10 @@ try{
 			Cache::enableCache();
 		}
 
-		Cache::set('wimb', $keyPgBlkInfo, $arrPageBlockInfo, (time() + 600));
-		Cache::set('wimb', $keyPgIds, $arrPageIds, (time() + 600));	
+		$intCacheTime = time() + 600;
+
+		Cache::set('wimb', $keyPgBlkInfo, $arrPageBlockInfo, $intCacheTime);
+		Cache::set('wimb', $keyPgPerm, $arrPagePerms, $intCacheTime);
 		
 		if(!$blnCacheEnabled){
 			Cache::disableCache();
@@ -181,6 +234,7 @@ try{
 	}
 
 	// Convert the list of page IDs into a SQL query string
+	$arrPageIds = array_keys($arrPageBlockInfo);
 	$strFilter = '(p1.cID IN(' . implode(',', $arrPageIds) . '))';
 
 	// Get a paginated list of pages using the page IDs from the first PageList request
@@ -201,7 +255,7 @@ try{
 		case 'page_name':
 			usort($arrPageBlockInfo, create_function('$a, $b', '
 				return strnatcmp(strtolower(' . $strFirst . '["page_name"]), strtolower(' . $strSecond . '["page_name"]));
-			'));		
+			'));
 			break;
 		
 		case 'page_path':
@@ -239,6 +293,8 @@ try{
 	$objResp->response->tblData = $arrPageBlockInfo;
 	$objResp->response->pgnHtml = $htmPgn;
 	$objResp->response->pgnInfo = $strPgnInfo;
+	$objResp->response->permInfo = $arrPagePerms;
+	$objResp->response->searchInstance = $strSearchInstance;
 
 	header('Content-type: application/json');
 	echo $objJh->encode($objResp);

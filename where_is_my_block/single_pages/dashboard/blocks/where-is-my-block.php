@@ -1,12 +1,23 @@
-<?php 
+<?php  
 defined('C5_EXECUTE') or die(_('Access Denied.'));
 
 // Type cast form vars passed from controller
-$arrBlockTypes = (array) $arrBlockTypes;
+$arrBlockTypes = array_values((array) $arrBlockTypes);
 $arrItemsPerPage = (array) $arrItemsPerPage;
 
-// Get any previous form options
-$arrFormOpts = isset($_SESSION['wimb_form_options']) ? (array) $_SESSION['wimb_form_options'] : array();
+// Set default form options
+$arrFormOpts = array(
+	'btid' => '',
+	'ipp' => 10,
+	'sort_by' => 'page_name',
+	'sort_dir' => 'asc',
+	'ccm_paging_p' => 1
+);
+
+// Override default form options if saved options exist
+if(isset($_SESSION['wimb_form_options']) && is_array($_SESSION['wimb_form_options'])){
+	$arrFormOpts = $_SESSION['wimb_form_options'];
+}
 
 // Get any help blocks (ensure user can view any links beforehand)
 $strViewPermText = t('Some pages may be omitted due to your current viewing permissions.');
@@ -103,12 +114,12 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 
 <script type="text/javascript">
 jQuery(document).ready(function($){
-	var oWimbForm = new WhereIsMyBlock.Form();
-	oWimbForm.init();
+	var WimbForm = new WhereIsMyBlock.Form();
+	WimbForm.init();
 });
 </script>
 
-<?php
+<?php 
 // End pane
 echo $objDh->getDashboardPaneFooterWrapper(FALSE);
 ?>

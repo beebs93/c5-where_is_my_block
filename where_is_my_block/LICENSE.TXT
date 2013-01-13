@@ -1,2 +1,1 @@
-This software is licensed under the terms described in the concrete5.org marketplace
-http://www.concrete5.org/help/legal/commercial_add-on_license
+This software is licensed under the terms described in the concrete5.org marketplace. Please find the add-on there for the latest license copy.

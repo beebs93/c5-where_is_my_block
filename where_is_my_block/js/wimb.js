@@ -10,6 +10,7 @@
 
 WhereIsMyBlock.Form = function(){
 	var _this = this,
+		$body = $('body'),
 		$container = $('div#ccm-dashboard-content > div.container'),
 		$ccmBody = $('div.ccm-pane-body'),
 		$ccmFooter = $('div.ccm-pane-footer'),
@@ -25,7 +26,8 @@ WhereIsMyBlock.Form = function(){
 		$refreshInput = $form.find('input[name="refresh"]'),
 		$tokenInput = $form.find('input[name="ccm_token"]'),
 		oQueryVars = {},
-		bIsAjaxing = false;
+		bIsAjaxing = false,
+		bResubmitFormOnCheckIn = false;
 
 
 	/**
@@ -35,12 +37,13 @@ WhereIsMyBlock.Form = function(){
 	 *
 	 * @author Brad Beebe
 	 * @since v0.9.0
+	 * @since v1.0.0.1 - Added page menu modal
 	 */
 	this.init = function(){
 		// Setup ajax spinner
 		$loader = $('<div id="ccm-dialog-loader-wrapper" class="ccm-ui"><img id="ccm-dialog-loader" src="' + CCM_IMAGE_PATH + '/throbber_white_32.gif" /></div>');
 
-		$('body').append($loader);
+		$body.append($loader);
 
 		// Interrupt the normal form submission so we can use our custom method
 		$form.on('submit', function(e){
@@ -51,12 +54,45 @@ WhereIsMyBlock.Form = function(){
 			return false;
 		});
 		
-		// Add listeners to each select element to auto-submit the form upon user interaction
+		// Watches any Ajax requests to determine if the form needs to be
+		// updated when the user interacts with a page menu modal
+		$(document).ajaxSend(function(e){
+			if((!arguments[2]) || !arguments[2].url){
+				return false;
+			}
+
+			var sUrl = arguments[2].url,
+				aToolScriptMatch = /[a-zA-Z0-9\-_\.]+(?=\?)/.exec(sUrl),
+				sToolScript = '',
+				oResubmittableAjaxReq = {
+					edit_collection_popup: true,	// "Properties", "Full Page Caching", Delete", "Set Permissions" or "Design"
+					versions: true					// "Versions"
+				};
+
+			if(!aToolScriptMatch.length){
+				return false;
+			}
+
+			sToolScript = aToolScriptMatch[0].replace(/(\.[a-zA-Z]+)$/, '');
+			//console.log(sToolScript);
+			
+			if(oResubmittableAjaxReq[sToolScript]){
+				bResubmitFormOnCheckIn = true;
+			}
+
+			if(sToolScript === 'sitemap_check_in' && bResubmitFormOnCheckIn === true && bIsAjaxing === false){
+				$refreshInput.val(1);
+
+				_this.submitForm();
+			}
+		});
+
+		// Auto-submit form when any input is changed
 		$select.each(function(){
 			var $this = $(this);
 			
 			$this.on('change', function(e){
-				if($btidSelect.find(':selected').val().length > 0){
+				if($btidSelect.find(':selected').val().length){
 					var iRefresh = $(this).is($btidSelect) ? 1 : 0;
 					$refreshInput.val(iRefresh);
 
@@ -68,8 +104,7 @@ WhereIsMyBlock.Form = function(){
 			});
 		});
 		
-		// Add listeners to any table heading links that will adjust the sorting inputs
-		// and re-submit the form
+		// Table heading links will adjust the sorting inputs and re-submit the form
 		$ccmBody.on('click', 'table#ccm-where-is-my-block th a', function(e){
 			if(bIsAjaxing !== false){
 				return false;
@@ -77,7 +112,7 @@ WhereIsMyBlock.Form = function(){
 
 			var sCurrentSort = $sortInput.val(),
 				sCurrentDir = $dirInput.val(),
-				sNewSort = $(this).get(0).getAttribute('data-sort'),
+				sNewSort = $(this).attr('data-sort'),
 				sNewDir = sCurrentDir == 'asc' ? 'desc' : 'asc';
 				
 			$sortInput.val(sNewSort);
@@ -89,6 +124,41 @@ WhereIsMyBlock.Form = function(){
 			$refreshInput.val(0);
 
 			_this.submitForm();
+		});
+
+		// Clicking on table rows will display the page menu modal
+		$ccmBody.on('click', 'table#ccm-where-is-my-block tr', function(e){
+			var $this = $(this);
+
+			if(bIsAjaxing === true){
+				return false;
+			}
+		
+			if($this.hasClass('ccm-results-list-header')) {
+				return false;
+			}
+
+			var oParams = {
+				'cID': $this.attr('cID'), 
+				'select_mode': $this.attr('sitemap-select-mode'), 
+				'display_mode': $this.attr('sitemap-display-mode'), 
+				'instance_id': $this.attr('sitemap-instance-id'),  
+				'isTrash': $this.attr('tree-node-istrash'), 
+				'inTrash': $this.attr('tree-node-intrash'), 
+				'canCompose': $this.attr('tree-node-cancompose'), 
+				'canEditProperties': $this.attr('tree-node-can-edit-properties'), 
+				'canEditSpeedSettings': $this.attr('tree-node-can-edit-speed-settings'), 
+				'canEditPermissions': $this.attr('tree-node-can-edit-permissions'), 
+				'canEditDesign': $this.attr('tree-node-can-edit-design'), 
+				'canViewVersions': $this.attr('tree-node-can-view-versions'), 
+				'canDelete': $this.attr('tree-node-can-delete'), 
+				'canAddSubpages': $this.attr('tree-node-can-add-subpages'), 
+				'canAddExternalLinks': $this.attr('tree-node-can-add-external-links'), 
+				'cNumChildren': $this.attr('cNumChildren'), 
+				'cAlias': $this.attr('cAlias')
+			};
+			
+			showPageMenu(oParams, e);
 		});
 		
 		// Interrupt the normal pagination links to adjust the appropriate form inputs
@@ -105,7 +175,7 @@ WhereIsMyBlock.Form = function(){
 			}
 			
 			// Extract the page number or find the average if clicking on a '...' link
-			if((aMatch instanceof Array) && aMatch.length > 1){
+			if((aMatch instanceof Array) && aMatch.length){
 				iPage = parseInt(aMatch[1]);
 			}else if($this.text() == '...'){
 				var iPrev = parseInt($this.parent().prev().find('a:first-child').text()),
@@ -125,7 +195,7 @@ WhereIsMyBlock.Form = function(){
 			return false;
 		});
 
-		// IF there are any sticky form values we auto-submit the form on page load
+		// If there are any sticky form values we auto-submit the form on page load
 		if($btidSelect.find(':selected').val() != ''){			
 			$refreshInput.val(0);
 
@@ -200,6 +270,7 @@ WhereIsMyBlock.Form = function(){
 				$loader.hide();
 
 				bIsAjaxing = false;
+				bResubmitFormOnCheckIn = false;
 
 				break;
 
@@ -227,7 +298,9 @@ WhereIsMyBlock.Form = function(){
 	 * @author Brad Beebe
 	 * @since v0.9.0
 	 * @since v0.9.1.2 - Separated out the logic to display alerts/status messages
-	 * @since v1.0.0.1 - Fixed table headings not being translatable
+	 * @since v1.0.0.1 - Removed anchor links in page page columns
+	 *        		   - Fixed table headings not being translatable
+	 *        		   - Added HTML to enable page menu modal
 	 */
 	this.parseXhrSuccess = function(oData){
 		var oData = oData || {};
@@ -240,14 +313,18 @@ WhereIsMyBlock.Form = function(){
 		$ccmFooter.find('div.ccm-pagination').remove();
 		
 		// Success
-		if((oData.status === 'success' && oData.response) && oData.response.tblData && oData.response.tblData instanceof Array && oData.response.tblData.length > 0){
-			var aTblData = oData.response.tblData;
+		if((oData.status === 'success' && oData.response) && (oData.response.tblData && oData.response.tblData instanceof Array && oData.response.tblData.length) && (typeof oData.response.permInfo === 'object')){
+			CCM_SEARCH_INSTANCE_ID = oData.response.searchInstance;
+
+			var aTblData = oData.response.tblData,
+				oPagePerms = oData.response.permInfo;
 			
 			var sTable = '<table border="0" cellspacing="0" cellpadding="0" id="ccm-where-is-my-block" class="ccm-results-list">';
-			sTable += '<thead><tr>'
+			sTable += '<thead><tr class="ccm-results-list-header">';
 			
 			// Build table headings (use JS equivalent of concrete5 unhandle() text helper method)
 			for(var sHeading in aTblData[0]){
+				// Only make columns out of headings with a translatable string
 				if(typeof WhereIsMyBlock.TEXT_TABLE_COLUMNS[sHeading] !== 'string'){
 					continue;
 				}
@@ -263,18 +340,21 @@ WhereIsMyBlock.Form = function(){
 			// Build result rows
 			for(var i = 0, ii = aTblData.length; i < ii; i++){
 				var oRow = aTblData[i],
-					sRowClass = i % 2 !== 0 ? ' ccm-list-record-alt' : '';
+					sRowClass = i % 2 !== 0 ? ' ccm-list-record-alt' : '',
+					sPageId = oRow['xPageId'],
+					sPagePerms = oPagePerms[sPageId].join(' ');
 
-				sTable += '<tr class="ccm-list-record' + sRowClass + '">';
+				sTable += '<tr class="ccm-list-record' + sRowClass + '" ' + sPagePerms + '>';
 				
 				for(var sCol in oRow){
+					// Only fill columns that have a translatable string
+					if(typeof WhereIsMyBlock.TEXT_TABLE_COLUMNS[sCol] !== 'string'){
+						continue;
+					}
+
 					var sEncodedVal = oRow[sCol].toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 					
-					sTable += '<td>';
-					
-					sTable += (sCol == 'page_path') ? '<a href="' + oRow[sCol] + '" target="_blank">' + sEncodedVal + '</a>' : sEncodedVal;
-					
-					sTable += '</td>'
+					sTable += '<td>' + sEncodedVal + '</td>';
 				}
 				
 				sTable += '</tr>';
@@ -286,11 +366,11 @@ WhereIsMyBlock.Form = function(){
 			var sPgnInfo = oData.response.pgnInfo,
 				sPgn = oData.response.pgnHtml;
 			
-			if(sPgnInfo && sPgnInfo.length > 0){
+			if(sPgnInfo && sPgnInfo.length){
 				sTable += '<div class="ccm-paging-top">' + sPgnInfo + '</div>';
 			}
 			
-			if(sPgn && sPgn.length > 0){
+			if(sPgn && sPgn.length){
 				$ccmFooter.prepend(sPgn);
 			}
 			
@@ -323,7 +403,7 @@ WhereIsMyBlock.Form = function(){
 			message: WhereIsMyBlock.TEXT_GENERAL_ERROR
 		};
 
-		if($xhr.responseText.length > 0){
+		if($xhr.responseText.length){
 			oOpts.alert += $xhr.responseText.replace(/(<([^>]+)>)/ig, '');
 		}
 
@@ -352,7 +432,7 @@ WhereIsMyBlock.Form = function(){
 			$alert,
 			$message;
 
-		if(oArgs.alert && oArgs.alert.length > 0){
+		if(oArgs.alert && oArgs.alert.length){
 			var sAlert = '<div class="ccm-ui" id="ccm-dashboard-result-message">';
 			sAlert += '<div class="row"><div class="span12">';
 			sAlert += '<div class="alert alert-' + oArgs.status + '"><button type="button" class="close" data-dismiss="alert">×</button>' + oArgs.alert + '</div>';
@@ -365,7 +445,7 @@ WhereIsMyBlock.Form = function(){
 			$container.prepend($alert);
 		}
 		
-		if(oArgs.message && oArgs.message.length > 0){
+		if(oArgs.message && oArgs.message.length){
 			$message = $('<h5 class="responseText">' + oArgs.message + '</h5>');
 			$ccmBody.prepend($message);
 		}

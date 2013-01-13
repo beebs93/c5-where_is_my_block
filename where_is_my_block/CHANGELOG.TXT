@@ -44,14 +44,17 @@
 
 0.9.1.1 - January 2013
 - Moved unnecessary code from single page controller's constructor
+- Stable release
 
 0.9.1.2 - January 2013
 - Optimzed method of retrieving a Page's Block objects to speed up processing time
 - Display a message to the user upon any Ajax errors
 - Removed checking individual block permissions (increases performance)
+- Stable release
 
 1.0.0.0 - January 2013
 - Approved by concrete5 Peer Review Board
 
 1.0.0.1 - January 2013
 - Added German translation (thanks Remo)
+- Added page menu modal when clicking on result items
