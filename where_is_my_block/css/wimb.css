@@ -16,14 +16,6 @@
 	width:45%;
 }
 
-#ccm-where-is-my-block tr.ccm-list-record td{
-	cursor:default;
-}
-
-#ccm-where-is-my-block tr.ccm-list-record a{
-	display:block;
-}
-
 .ccm-paging-top{
 	width:100%;
 	margin:0 0 5px;
