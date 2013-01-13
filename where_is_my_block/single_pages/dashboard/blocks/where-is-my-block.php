@@ -18,7 +18,7 @@ if(!$objPerm->canRead()){
 	$htmClearCacheText = '';
 }else{
 	$strClearCacheUrl = $objNh->getLinkToCollection($objCache, TRUE);	
-	$htmClearCacheText = t('You may also want to <a href="' . $strClearCacheUrl . '">clear your cache</a> to ensure you have the most up-to-date results.');
+	$htmClearCacheText = t('You may also want to <a href="%s">clear your cache</a> to ensure you have the most up-to-date results.', $strClearCacheUrl);
 }
 
 // Generate option elements for block type select menu
@@ -33,7 +33,7 @@ foreach($arrBlockTypes as $keyI => $arrBt){
 			$htmBtOpts .= '</optgroup>';
 		}
 		
-		$htmBtOpts .= '<optgroup label="' . t($objTh->unhandle($strOptGroup) . ' Blocks') . '">';
+		$htmBtOpts .= '<optgroup label="' . t('%s Blocks', t($objTh->unhandle($strOptGroup))) . '">';
 	}
 	
 	$strSelected = $arrFormOpts['btid'] == $arrBt['id'] ? ' selected' : '';

@@ -1,0 +1,86 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: concrete 5.6.0.2 | v1.0\n"
+"Report-Msgid-Bugs-To: remo.laubacher@gmail.com\n"
+"POT-Creation-Date: 2013-01-13 16:29+0100\n"
+"PO-Revision-Date: 2013-01-13 16:29+0100\n"
+"Last-Translator: remo.laubacher@gmail.com\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: /packages/where_is_my_block/single_pages/dashboard/blocks/where-is-my-block.php:69
+msgid "# Per Page"
+msgstr "# pro Seite"
+
+#: /packages/where_is_my_block/tools/page_block_list.php:57
+msgid "...Really?"
+msgstr "...wirklich?"
+
+#: /packages/where_is_my_block/controllers/dashboard/blocks/where-is-my-block.php:80
+msgid "An Ajax error occured: "
+msgstr "AJAX Fehler: "
+
+#: /packages/where_is_my_block/single_pages/dashboard/blocks/where-is-my-block.php:25
+msgid "Choose a block type"
+msgstr "Block-Typ auswählen"
+
+#: /packages/where_is_my_block/controller.php:19
+msgid "Lists the pages that contain a specific block type."
+msgstr "Findet Seiten in denen der auswählte Block-Typ verwendet wird."
+
+#: /packages/where_is_my_block/tools/page_block_list.php:161
+msgid "No pages contain that block type"
+msgstr "Block-Typ in keiner Seite gefunden"
+
+#: /packages/where_is_my_block/single_pages/dashboard/blocks/where-is-my-block.php:85
+msgid "Search"
+msgstr "Suchen"
+
+#: /packages/where_is_my_block/single_pages/dashboard/blocks/where-is-my-block.php:12
+msgid "Some pages may be omitted due to your current viewing permissions."
+msgstr "Einige Seiten werden möglicherweise aufgrund von eingeschränkten Berechtigungen nicht angezeigt."
+
+#: /packages/where_is_my_block/controllers/dashboard/blocks/where-is-my-block.php:79
+#: /packages/where_is_my_block/tools/page_block_list.php:71
+#: /packages/where_is_my_block/tools/page_block_list.php:248
+msgid "There was an error with your request"
+msgstr "Fehler bei der Anfrage"
+
+#, php-format
+msgid "Viewing 1 to %d (%d Total)"
+msgstr "Zeige Seite 1 bis %d (Total %d)"
+
+#, php-format
+msgid "Viewing %d to %d (%d Total)"
+msgstr "Zeige Seite %d bis %d (Total %d)"
+
+msgid "Where Is My Block"
+msgstr "Wo ist mein Block"
+
+#: /packages/where_is_my_block/controller.php:33
+msgid "Where Is My Block?"
+msgstr "Wo ist mein Block?"
+
+#: /packages/where_is_my_block/tools/page_block_list.php:63
+msgid "You cannot search for that block type"
+msgstr "Kann nicht nach diesem Block-Typ suchen"
+
+#: /packages/where_is_my_block/single_pages/dashboard/blocks/where-is-my-block.php:21
+#, php-format
+msgid "You may also want to <a href=\"%s\">clear your cache</a> to ensure you have the most up-to-date results."
+msgstr "Um sicherzustellen, dass das Ergebnis aktuell ist, sollten Sie vorgängig den <a href=\"%s\">Cache leeren</a>."
+
+#: /packages/where_is_my_block/tools/page_block_list.php:60
+msgid "You need to select a block type to search for"
+msgstr "Bitte Block-Typ auswählen"
+
+#: /packages/where_is_my_block/single_pages/dashboard/blocks/where-is-my-block.php:41
+msgid "name"
+msgstr "Name"
+
+#: /packages/where_is_my_block/single_pages/dashboard/blocks/where-is-my-block.php:36
+#, php-format
+msgid "%s Blocks"
+msgstr "%s Blöcke"
