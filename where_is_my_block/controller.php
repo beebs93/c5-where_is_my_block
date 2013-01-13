@@ -50,4 +50,21 @@ class WhereIsMyBlockPackage extends Package{
 		$objPage = SinglePage::add('/dashboard/blocks/where-is-my-block', $objPkg);
 		$objPage->setAttribute('icon_dashboard', 'icon-search');
 	}
+
+
+	/**
+	 * Upgrades package
+	 *
+	 * @return void
+	 *
+	 * @author Brad Beebe
+	 * @since v1.0.0.1
+	 */	
+	public function upgrade(){
+		parent::upgrade();
+
+		// Delete any saved form options (this will also force next search
+		// to refresh any previously cached data)
+		unset($_SESSION['wimb_form_options']);
+	}
 }
