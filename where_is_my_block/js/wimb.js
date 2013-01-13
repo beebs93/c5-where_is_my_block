@@ -66,7 +66,7 @@ WhereIsMyBlock.Form = function(){
 				sToolScript = '',
 				oResubmittableAjaxReq = {
 					edit_collection_popup: true,	// "Properties", "Full Page Caching", Delete", "Set Permissions" or "Design"
-					versions: true,					// "Versions"
+					versions: true					// "Versions"
 				};
 
 			if(!aToolScriptMatch.length){
