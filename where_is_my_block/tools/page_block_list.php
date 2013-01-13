@@ -226,12 +226,12 @@ try{
 		$arrPageBlockInfo = array_slice($arrPageBlockInfo, $objPgn->result_offset, $objPgn->page_size);
 		
 		$htmPgn = (string) $objPl->displayPagingV2(FALSE, TRUE);
-		$strPgnInfo = t('Viewing ' . $objPgn->result_lower . ' to ' . $objPgn->result_upper . ' (' . $objPgn->result_count . ' Total)');
+		$strPgnInfo = t('Viewing %d to %d (%d Total)', $objPgn->result_lower, $objPgn->result_upper, $objPgn->result_count);
 	}else{
 		$intCurrentRows = count($arrPageBlockInfo);
 		
 		$htmPgn = '';
-		$strPgnInfo = t('Viewing 1 to ' . $intCurrentRows . ' (' . $intCurrentRows . ' Total)');
+		$strPgnInfo = t('Viewing 1 to %d (%d Total)', $intCurrentRows, $intCurrentRows);
 	}
 
 	$objResp->status = 'success';
