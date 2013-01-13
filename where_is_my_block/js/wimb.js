@@ -104,8 +104,7 @@ WhereIsMyBlock.Form = function(){
 			});
 		});
 		
-		// Add listeners to any table heading links that will adjust the sorting inputs
-		// and re-submit the form
+		// Table heading links will adjust the sorting inputs and re-submit the form
 		$ccmBody.on('click', 'table#ccm-where-is-my-block th a', function(e){
 			if(bIsAjaxing !== false){
 				return false;
@@ -196,7 +195,7 @@ WhereIsMyBlock.Form = function(){
 			return false;
 		});
 
-		// IF there are any sticky form values we auto-submit the form on page load
+		// If there are any sticky form values we auto-submit the form on page load
 		if($btidSelect.find(':selected').val() != ''){			
 			$refreshInput.val(0);
 
