@@ -138,8 +138,9 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		
 		$arrValues = array($objPage->getCollectionID(), $objPage->getVersionID(), (int) $intBtId);
 		
-	 	// While there exists a native method to retrieve all block object of a specific page,
-	 	// it causes a weird memory leak when c5 caching is enabled so we have to do it manually
+	 	// While there exists a native method to retrieve all block objects of a specific page,
+	 	// it has a large performance cost so we need to bypass it. We only need an array of
+	 	// block IDs so we can afford giving up the block objects.
 		$sqlBlocks = '
 		SELECT
 			Blocks.bID

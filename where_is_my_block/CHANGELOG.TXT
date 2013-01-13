@@ -52,3 +52,6 @@
 
 1.0.0.0 - January 2013
 - Approved by concrete5 Peer Review Board
+
+1.0.0.1 - January 2013
+- Added German translation (thanks Remo)
