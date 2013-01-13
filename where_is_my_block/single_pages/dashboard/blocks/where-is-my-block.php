@@ -103,12 +103,12 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 
 <script type="text/javascript">
 jQuery(document).ready(function($){
-	var oWimbForm = new WhereIsMyBlock.Form();
-	oWimbForm.init();
+	var WimbForm = new WhereIsMyBlock.Form();
+	WimbForm.init();
 });
 </script>
 
-<?php
+<?php 
 // End pane
 echo $objDh->getDashboardPaneFooterWrapper(FALSE);
 ?>

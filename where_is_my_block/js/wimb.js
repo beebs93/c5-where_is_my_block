@@ -298,7 +298,9 @@ WhereIsMyBlock.Form = function(){
 	 * @author Brad Beebe
 	 * @since v0.9.0
 	 * @since v0.9.1.2 - Separated out the logic to display alerts/status messages
-	 * @since v1.0.0.1 - Fixed table headings not being translatable
+	 * @since v1.0.0.1 - Removed anchor links in page page columns
+	 *        		   - Fixed table headings not being translatable
+	 *        		   - Added HTML to enable page menu modal
 	 */
 	this.parseXhrSuccess = function(oData){
 		var oData = oData || {};
