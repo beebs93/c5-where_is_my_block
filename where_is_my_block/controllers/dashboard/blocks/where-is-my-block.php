@@ -1,4 +1,4 @@
-<?php
+<?php 
 defined('C5_EXECUTE') or die(_('Access Denied.'));
 
 class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
@@ -57,7 +57,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @since v0.9.1.1
 	 */
 	protected function isAllowedBlockTypesSet(){
-		return count($this->arrAllBlockTypes) > 0 && count($this->arrAllowedBtIds) > 0;
+		return count($this->arrAllBlockTypes) && count($this->arrAllowedBtIds);
 	}
 	
 	
