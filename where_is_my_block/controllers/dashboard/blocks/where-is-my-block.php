@@ -3,7 +3,6 @@ defined('C5_EXECUTE') or die(_('Access Denied.'));
 
 class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	protected $arrBlockTypes = array();
-	protected $arrAllowedBtIds = array();
 	protected $arrItemsPerPage = array(10, 25, 50, 100, 500);
 	protected $arrSortableCols = array('page_name', 'page_path', 'instances');
 	public $helpers = array('concrete/dashboard', 'form', 'navigation', 'text');
@@ -31,15 +30,11 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 				'category' => $objBt->isCoreBlockType() ? 'core' : 'third_party'
 			);
 			
-			$this->arrBlockTypes[] = $arrBtInfo;
-			
-			// Keep a separate array that records the valid block type IDs
-			// since running usort on arrays resets their keys
-			$this->arrAllowedBtIds[$arrBtInfo['id']] = TRUE;
+			$this->arrBlockTypes[$arrBtInfo['id']] = $arrBtInfo;
 		}
 		
 		// Sort by category then by handle
-		usort($this->arrBlockTypes, create_function('$a, $b', '
+		uasort($this->arrBlockTypes, create_function('$a, $b', '
 			if($a["category"] == $b["category"]){
 				return strnatcmp($a["handle"], $b["handle"]);
 			}
@@ -187,7 +182,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 			$this->setAllowedBlockTypes();
 		}
 
-		return ((is_numeric($btId)) && $this->arrAllowedBtIds[(int) $btId] === TRUE);
+		return is_numeric($btId) && array_key_exists((int) $btId, $this->arrBlockTypes);
 	}
 	
 	

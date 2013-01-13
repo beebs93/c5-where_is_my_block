@@ -2,7 +2,7 @@
 defined('C5_EXECUTE') or die(_('Access Denied.'));
 
 // Type cast form vars passed from controller
-$arrBlockTypes = (array) $arrBlockTypes;
+$arrBlockTypes = array_values((array) $arrBlockTypes);
 $arrItemsPerPage = (array) $arrItemsPerPage;
 
 // Set default form options
