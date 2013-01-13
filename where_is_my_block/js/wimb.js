@@ -226,7 +226,8 @@ WhereIsMyBlock.Form = function(){
 	 *
 	 * @author Brad Beebe
 	 * @since v0.9.0
-	 * @sicne v0.9.1.2 - Separated out the logic to display alerts/status messages
+	 * @since v0.9.1.2 - Separated out the logic to display alerts/status messages
+	 * @since v1.0.0.1 - Fixed table headings not being translatable
 	 */
 	this.parseXhrSuccess = function(oData){
 		var oData = oData || {};
@@ -247,14 +248,12 @@ WhereIsMyBlock.Form = function(){
 			
 			// Build table headings (use JS equivalent of concrete5 unhandle() text helper method)
 			for(var sHeading in aTblData[0]){
-				var sHeadClass = $sortInput.val() == sHeading ? 'ccm-results-list-active-sort-' + $dirInput.val() : '',
-					aHeadText = sHeading.toString().replace(/_/g, ' ').replace(/-/g, ' ').replace(/\//g, ' ').split(' '),
-					sHeadText = '';
-				
-				for(var i = 0, ii = aHeadText.length; i < ii; i++){
-					sHeadText += aHeadText[i].charAt(0).toUpperCase() + aHeadText[i].slice(1);
-					if(i + 1 != ii) sHeadText += ' ';
+				if(typeof WhereIsMyBlock.TEXT_TABLE_COLUMNS[sHeading] !== 'string'){
+					continue;
 				}
+
+				var sHeadClass = $sortInput.val() == sHeading ? 'ccm-results-list-active-sort-' + $dirInput.val() : '',
+					sHeadText = WhereIsMyBlock.TEXT_TABLE_COLUMNS[sHeading];
 				
 				sTable += '<th class="' + sHeadClass + '"><a href="javascript:{};" data-sort="' + sHeading + '">' + sHeadText + '</a></th>';
 			}
