@@ -15,7 +15,7 @@ WhereIsMyBlock.Form = function(){
 		$ccmBody = $('div.ccm-pane-body'),
 		$ccmFooter = $('div.ccm-pane-footer'),
 		$form = $('div#ccm-dashboard-content form#wimb'),
-		$formSubmit = $form.find('input[type="submit"]')
+		$formSubmit = $form.find('input[type="submit"]'),
 		$loader = undefined,
 		$select = $form.find('select'),
 		$btidSelect = $select.filter('select[name="btid"]'),
@@ -27,6 +27,9 @@ WhereIsMyBlock.Form = function(){
 		$tokenInput = $form.find('input[name="ccm_token"]'),
 		oQueryVars = {},
 		bIsAjaxing = false,
+		oResubmittableAjaxScripts = {},
+		aResubmittablePOSTData = [],
+		bPopUpOpened = false,
 		bResubmitFormOnCheckIn = false;
 
 
@@ -56,18 +59,30 @@ WhereIsMyBlock.Form = function(){
 		
 		// Watches any Ajax requests to determine if the form needs to be
 		// updated when the user interacts with a page menu modal
+		
+		oResubmittableAjaxScripts = {
+			edit_collection_popup: true,	// "Properties", "Full Page Caching", Delete", "Set Permissions" or "Design"
+			versions: true					// "Versions"
+		};
+
+		aResubmittablePOSTData = [
+			'ctask=delete',
+			'update_metadata=1',
+			'update_speed_settings=1',
+			'update_permissions=1',
+			'update_theme=1'
+		];
+
 		$(document).ajaxSend(function(e){
 			if((!arguments[2]) || !arguments[2].url){
 				return false;
 			}
 
-			var sUrl = arguments[2].url,
+			var oAjaxOpts = arguments[2],
+				sUrl = oAjaxOpts.url,
+				sData = oAjaxOpts.data,
 				aToolScriptMatch = /[a-zA-Z0-9\-_\.]+(?=\?)/.exec(sUrl),
-				sToolScript = '',
-				oResubmittableAjaxReq = {
-					edit_collection_popup: true,	// "Properties", "Full Page Caching", Delete", "Set Permissions" or "Design"
-					versions: true					// "Versions"
-				};
+				sToolScript = '';
 
 			if(!aToolScriptMatch.length){
 				return false;
@@ -76,8 +91,32 @@ WhereIsMyBlock.Form = function(){
 			sToolScript = aToolScriptMatch[0].replace(/(\.[a-zA-Z]+)$/, '');
 			//console.log(sToolScript);
 			
-			if(oResubmittableAjaxReq[sToolScript]){
-				bResubmitFormOnCheckIn = true;
+			// Check if a page menu modal item was clicked
+			if(oAjaxOpts.type === 'GET' && oResubmittableAjaxScripts[sToolScript] === true){
+				bPopUpOpened = true;
+			}
+
+			// If a page menu modal window was opened check if any operation
+			// was carried out that would merit a form re-submission once
+			// said modal window is closed and the page is auto-checked in
+			if(bPopUpOpened === true){
+				if(sToolScript === 'versions' && oAjaxOpts.type === 'GET'){
+					if(sUrl.indexOf('versions_reloaded=1') !== -1){
+						bResubmitFormOnCheckIn = true;
+
+						//console.log('Form will resubmit: versions_reloaded=1');
+					}
+				}else if(oAjaxOpts.type === 'POST'){
+					for(var i = 0, ii = aResubmittablePOSTData.length; i < ii; i++){
+						if(sData.indexOf(aResubmittablePOSTData[i]) !== -1){
+							bResubmitFormOnCheckIn = true;
+
+							//console.log('Form will resubmit: ' + aResubmittablePOSTData[i]);
+
+							break;
+						}
+					}
+				}
 			}
 
 			if(sToolScript === 'sitemap_check_in' && bResubmitFormOnCheckIn === true && bIsAjaxing === false){
