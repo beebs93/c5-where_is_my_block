@@ -58,3 +58,8 @@
 1.0.0.1 - January 2013
 - Added German translation (thanks Remo)
 - Added page menu modal when clicking on result items
+
+1.0.0.2 - January 2013
+- Moved functions for getting block IDs into separate helper
+- Updated method of storing form options
+- Changed conditions for re-submitting form
