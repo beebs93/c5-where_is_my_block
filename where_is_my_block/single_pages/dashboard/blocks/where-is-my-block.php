@@ -15,8 +15,8 @@ $arrFormOpts = array(
 );
 
 // Override default form options if saved options exist
-if(isset($_SESSION['wimb_form_options']) && is_array($_SESSION['wimb_form_options'])){
-	$arrFormOpts = $_SESSION['wimb_form_options'];
+if(isset($_COOKIE['wimb_form_options']) && is_string($_COOKIE['wimb_form_options'])){
+	$arrFormOpts = unserialize($_COOKIE['wimb_form_options']);
 }
 
 // Get any help blocks (ensure user can view any links beforehand)

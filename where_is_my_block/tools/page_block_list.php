@@ -42,13 +42,15 @@ try{
 	$blnRefresh = isset($_GET['refresh']) ? (bool) $_GET['refresh'] : FALSE;
 
 	// Record the options to make the form sticky
-	$_SESSION['wimb_form_options'] = array(
+	$arrFormOpts = array(
 		'btid' => $intSearchBtId,
 		'ipp' => $intSearchIpp,
 		'sort_by' => $strSearchSort,
 		'sort_dir' => $strSearchDir,
 		'ccm_paging_p' => $_GET['ccm_paging_p']
 	);
+
+	setcookie('wimb_form_options', serialize($arrFormOpts), time() + 300, '/');
 
 	// Check for a valid block type ID
 	$strError = '';
