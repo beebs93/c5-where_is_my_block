@@ -3,6 +3,7 @@ defined('C5_EXECUTE') or die(_('Access Denied.'));
 
 $objJh = Loader::helper('json');
 $objVh = Loader::helper('validation/token');
+$objPbsh = Loader::helper('page_block_search', 'where_is_my_block');
 $objController = Loader::controller('/dashboard/blocks/where-is-my-block');
 
 $objResp = new stdClass();
@@ -145,7 +146,7 @@ try{
 				$strPath = BASE_URL;
 			}
 			
-			$arrPageBlockIds = $objController->getPageBlockIds($objPage, $intSearchBtId);
+			$arrPageBlockIds = $objPbsh->getPageBlockIdsByBlockTypeId($objPage, $intSearchBtId);
 			
 			foreach($arrPageBlockIds as $intBlockId){
 				if($intBlockId < 1){
