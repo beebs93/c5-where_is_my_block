@@ -63,3 +63,7 @@
 - Moved functions for getting block IDs into separate helper
 - Updated method of storing form options
 - Changed conditions for re-submitting form
+
+1.0.0.3 - March 2013
+- Added additional items to page menu modal
+- Minor bug fixes

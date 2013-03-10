@@ -27,11 +27,10 @@ Manual installation
 
 Roadmap/Future features
 -------
-- Translations (any language I can get my hands on)
-- Popup modal window when clicking a page in results table (similiar to core "Page Search" dashboard page)
+- None planned at this time
 
 License
 -------
-Copyright (c) 2012 Brad Beebe
+Copyright (c) 2012-2013 Brad Beebe
 
 Dual-licensed under MIT and GPL licenses.
