@@ -84,7 +84,7 @@ WhereIsMyBlock.Form = function(){
 				aToolScriptMatch = /[a-zA-Z0-9\-_\.]+(?=\?)/.exec(sUrl),
 				sToolScript = '';
 
-			if(!aToolScriptMatch.length){
+			if(!aToolScriptMatch || !aToolScriptMatch.length){
 				return false;
 			}
 

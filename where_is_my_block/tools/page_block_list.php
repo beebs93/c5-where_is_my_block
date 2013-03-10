@@ -168,31 +168,41 @@ try{
 
 				// Get permissions info
 				$objPagePerm = new Permissions($objPage);
-				$objCt = CollectionType::getByID($objPage->getCollectionTypeID());
-				
+
+				// Only show move/copy for non-system pages (just in case)
+				$strDisplayMode = $objPage->isSystemPage() ? '' : 'search';
+
 				$arrPagePerms[$intPageId] = array(
 					'cName="' . $objTh->entities($strName) . '"',
 					'cID="' . $intPageId . '"',
 					'cNumChildren="' . $objPage->getNumChildren() . '"',
 					'sitemap-select-callback=""',
-					'sitemap-select-mode=""',
+					'sitemap-select-mode="move_copy_delete"',
 					'sitemap-instance-id="' . $strSearchInstance . '"',
-					'sitemap-display-mode=""',
-					'tree-node-cancompose=""'
+					'sitemap-display-mode="' . $strDisplayMode . '"'
 				);
-
+				
 				$blnCanEditPageProperties = $objPagePerm->canEditPageProperties();
 				$blnCanEditPageSpeedSettings = $objPagePerm->canEditPageSpeedSettings();
 				$blnCanEditPagePermissions = $objPagePerm->canEditPagePermissions();
 				$blnCanEditPageDesign = ($objPagePerm->canEditPageTheme() || $objPagePerm->canEditPageType());
 				$blnCanViewPageVersions = $objPagePerm->canViewPageVersions();
 				$blnCanDeletePage = $objPagePerm->canDeletePage();
-				
-				// We prevent the following permissions since detecting when their respective
-				// modals are finished is too difficult to accurately determine
-				$blnCanAddSubpages = false;
-				$blnCanAddExternalLinks = false;
+				$blnCanAddSubpages = $objPagePerm->canAddSubpage();
+				$blnCanAddExternalLinks = $objPagePerm->canAddExternalLink();
 
+				// Determine Composer permission
+				$objCt = CollectionType::getByID($objPage->getCollectionTypeID());
+				
+				if(is_object($objCt)){
+					if($objCt->isCollectionTypeIncludedInComposer()){
+						if($blnCanEditPageProperties && $objDh->canAccessComposer()){
+							$arrPagePerms[$intPageId][] = 'tree-node-cancompose="true"';
+						}
+					}
+				}
+
+				// Generate additional permission strings
 				$arrPerms = array(
 					'canEditPageProperties' => $blnCanEditPageProperties,
 					'canEditPageSpeedSettings' => $blnCanEditPageSpeedSettings,
