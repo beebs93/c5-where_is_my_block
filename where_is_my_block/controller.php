@@ -65,6 +65,6 @@ class WhereIsMyBlockPackage extends Package{
 
 		// Delete any saved form options (this will also force next search
 		// to refresh any previously cached data)
-		unset($_SESSION['wimb_form_options']);
+		setcookie('wimb_form_options', '', time() - 1000, '/');
 	}
 }
