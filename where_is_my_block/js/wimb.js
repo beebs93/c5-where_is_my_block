@@ -120,9 +120,25 @@ WhereIsMyBlock.Form = function(){
 			}
 
 			if(sToolScript === 'sitemap_check_in' && bResubmitFormOnCheckIn === true && bIsAjaxing === false){
-				$refreshInput.val(1);
+				// Briefly highlight the current row before re-submitting the form
+				var $currentRow = $ccmBody.find('tr.currentRow'),
+					$currentCells = $currentRow.find('td'),
+					sCurrentColor = $currentCells.css('background-color');
 
-				_this.submitForm();
+				$currentRow.addClass('highlightRow');
+
+				$currentCells.stop().animate({
+					backgroundColor: sCurrentColor
+				}, {
+					duration: 800,
+					complete: function(){
+						$currentRow.removeClass('currentRow highlightRow');
+
+						$refreshInput.val(1);
+
+						_this.submitForm();
+					}
+				});
 			}
 		});
 
@@ -169,6 +185,8 @@ WhereIsMyBlock.Form = function(){
 		$ccmBody.on('click', 'table#ccm-where-is-my-block tr', function(e){
 			var $this = $(this);
 
+			$this.parent().children('tr').removeClass('currentRow highlightRow');
+
 			if(bIsAjaxing === true){
 				return false;
 			}
@@ -196,6 +214,8 @@ WhereIsMyBlock.Form = function(){
 				'cNumChildren': $this.attr('cNumChildren'), 
 				'cAlias': $this.attr('cAlias')
 			};
+
+			$this.addClass('currentRow');
 			
 			showPageMenu(oParams, e);
 		});

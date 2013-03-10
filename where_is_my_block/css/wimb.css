@@ -16,6 +16,10 @@
 	width:45%;
 }
 
+#ccm-where-is-my-block tr.currentRow.highlightRow td{
+     background-color:#ffffc0;
+}
+
 .ccm-paging-top{
 	width:100%;
 	margin:0 0 5px;
