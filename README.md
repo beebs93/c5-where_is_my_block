@@ -27,7 +27,7 @@ Manual installation
 
 Roadmap/Future features
 -------
-- None planned at this time
+- Any translations I can get my hands on
 
 License
 -------
