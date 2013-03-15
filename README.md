@@ -5,7 +5,7 @@ A concrete5 add-on that allows users to search for pages that contain a specific
 
 Download
 --------
-This is the latest <em>development</em> branch of the plugin.
+This is the latest <em>development</em> release of the add-on.
 
 <strong>Use this version at your own risk</strong> as it may contain bugs that may hinder/break your concrete5 installation.
 
