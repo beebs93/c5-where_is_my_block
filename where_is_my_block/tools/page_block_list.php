@@ -113,20 +113,11 @@ try{
 		$objDh = Loader::helper('concrete/dashboard');
 
 		// Get a list of all non-aliased pages viewable by the current user
-		$objHome = Page::getByID(HOME_CID);
-		$strHomePath = (string) $objHome->getCollectionPath();
-
-		$objPl = new PageList();
-		$objPl->filterByPath($strHomePath, TRUE);
+		$objPl = new PageList();		
 		$objPl->ignoreAliases();
 		$objPl->includeSystemPages();
 		$objPl->displayUnapprovedPages();
 		$arrAllowedPages = (array) $objPl->get();
-
-		$objPerm = new Permissions($objHome);
-		if($objPerm->canRead()){
-			array_unshift($arrAllowedPages, $objHome);
-		}
 
 		// For any page that has at least one of the block types we are searching for, get
 		// the page name, path and total number of instances while also recording any page
