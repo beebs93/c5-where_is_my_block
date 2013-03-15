@@ -69,6 +69,10 @@ $htmHelpToolTip .= strlen($htmClearCacheText) > 0 ? ('<br /><br />' . $htmClearC
 echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpToolTip, 'span12', FALSE);
 ?>
 
+<script type="text/javascript">
+var WhereIsMyBlock = <?php echo json_encode($arrJsConstants); ?>;
+</script>
+
 <div class="ccm-pane-options clearfix">
 	<form id="wimb" class="form-horizontal" method="get" action="<?php echo $objNh->getLinkToCollection($this->c, TRUE); ?>">
 		<div class="row ccm-pane-options-permanent-search">
@@ -85,7 +89,6 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 			</div>
 			
 			<div class="span4">
-
 				<?php
 				$this->controller->token->output('wimb_page_block_search');
 
@@ -96,7 +99,6 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 
 				echo $interface->submit(t('Search'), 'wimb', 'left', 'ccm-input-submit secondary');
 				?>
-				
 			</div>
 		<!-- .row --></div>
 	<!-- #wimb --></form>
@@ -115,7 +117,6 @@ echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpTo
 <script type="text/javascript">
 jQuery(document).ready(function($){
 	var WimbForm = new WhereIsMyBlock.Form();
-	WimbForm.init();
 });
 </script>
 

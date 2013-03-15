@@ -42,7 +42,7 @@ WhereIsMyBlock.Form = function(){
 	 * @since v0.9.0
 	 * @since v1.0.0.1 - Added page menu modal
 	 */
-	this.init = function(){
+	var init = function(){
 		// Setup ajax spinner
 		$loader = $('<div id="ccm-dialog-loader-wrapper" class="ccm-ui"><img id="ccm-dialog-loader" src="' + CCM_IMAGE_PATH + '/throbber_white_32.gif" /></div>');
 
@@ -509,6 +509,10 @@ WhereIsMyBlock.Form = function(){
 			$ccmBody.prepend($message);
 		}
 	};
+
+
+	// Auto-init constructor
+	init();
 };
 
 })(jQuery);

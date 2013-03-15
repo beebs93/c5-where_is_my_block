@@ -65,25 +65,10 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	 * @since v0.9.0
 	 */
 	public function on_start(){
-		$objUh = Loader::helper('concrete/urls');
 		$objHh = Loader::helper('html');
 		
-		$strJs = '
-		<script type="text/javascript">
-		var WhereIsMyBlock = WhereIsMyBlock || {};
-		WhereIsMyBlock.URL_TOOL_PAGE_BLOCK_SEARCH = "' . $objUh->getToolsURL('page_block_list.php', 'where_is_my_block') . '";
-		WhereIsMyBlock.TEXT_GENERAL_ERROR = "' . t('There was an error with your request') . '";
-		WhereIsMyBlock.TEXT_AJAX_ERROR = "' . t('An Ajax error occured: ') . '";
-		WhereIsMyBlock.TEXT_TABLE_COLUMNS = {
-			page_name: "' . t('Page Name') . '",
-			page_path: "' . t('Page Path') . '",
-			instances: "' . t('Instances') . '"
-		};
-		</script>';
-		
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
-		$this->addHeaderItem($strJs);
-		$this->addHeaderItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
+		$this->addFooterItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
 		
 		parent::on_start();
 	}
@@ -102,6 +87,17 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 			$this->setAllowedBlockTypes();
 		}
 
+		$arrJsConstants = array(
+			'URL_TOOL_PAGE_BLOCK_SEARCH' => Loader::helper('concrete/urls')->getToolsURL('page_block_list.php', 'where_is_my_block'),
+			'TEXT_GENERAL_ERROR' => t('There was an error with your request'),
+			'TEXT_AJAX_ERROR' => t('An Ajax error occured: '),
+			'TEXT_TABLE_COLUMNS' => array(
+				'page_name' => t('Page Name'),
+				'page_path' => t('Page Path'),
+				'instances' => t('Instances')
+			)
+		);
+
 		// Add any core helpers, models, etc. in the view scope
 		$this->set('objDh', $this->helperObjects['concrete_dashboard']);
 		$this->set('objFh', $this->helperObjects['form']);
@@ -109,7 +105,8 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		$this->set('objTh', $this->helperObjects['text']);
 		$this->set('objPkg', Loader::package('where_is_my_block'));
 		
-		// Add any form vars in the view scope
+		// Add any additional vars in the view scope
+		$this->set('arrJsConstants', $arrJsConstants);
 		$this->set('arrBlockTypes', $this->arrBlockTypes);
 		$this->set('arrItemsPerPage', $this->arrItemsPerPage);
 	}
