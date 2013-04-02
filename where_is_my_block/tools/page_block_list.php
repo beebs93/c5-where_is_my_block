@@ -96,7 +96,7 @@ try{
 		Cache::delete('wimb', $keyPgPerm);
 	}else{
 		$arrPageBlockInfo = ($cachePgBlkInfo = Cache::get('wimb', $keyPgBlkInfo, FALSE)) ? $cachePgBlkInfo : array();
-		$arrPagePerms = ($cachePagePerm = Cache::get('wimb', $keyPgPerm, FALSE)) ? $arrPagePerms : array();
+		$arrPagePerms = ($cachePagePerm = Cache::get('wimb', $keyPgPerm, FALSE)) ? $cachePagePerm : array();
 	}
 
 	if(!$blnCacheEnabled){
