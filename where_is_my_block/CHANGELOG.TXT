@@ -71,3 +71,7 @@
 1.0.0.4 - March 2013
 - Cleaned up JS files
 - Fixed inefficent PageList request in tool script
+
+1.1.0.0 - April 2013
+- Fixed error in caching logic
+- Stable release
