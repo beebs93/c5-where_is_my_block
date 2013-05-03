@@ -69,10 +69,6 @@ $htmHelpToolTip .= strlen($htmClearCacheText) > 0 ? ('<br /><br />' . $htmClearC
 echo $objDh->getDashboardPaneHeaderWrapper($objPkg->getPackageName(), $htmHelpToolTip, 'span12', FALSE);
 ?>
 
-<script type="text/javascript">
-var WhereIsMyBlock = <?php echo json_encode($arrJsConstants); ?>;
-</script>
-
 <div class="ccm-pane-options clearfix">
 	<form id="wimb" class="form-horizontal" method="get" action="<?php echo $objNh->getLinkToCollection($this->c, TRUE); ?>">
 		<div class="row ccm-pane-options-permanent-search">
@@ -113,12 +109,6 @@ var WhereIsMyBlock = <?php echo json_encode($arrJsConstants); ?>;
 <!-- .ccm-pane-body --></div>
 	
 <div class="ccm-pane-footer"></div>
-
-<script type="text/javascript">
-jQuery(document).ready(function($){
-	var WimbForm = new WhereIsMyBlock.Form();
-});
-</script>
 
 <?php 
 // End pane

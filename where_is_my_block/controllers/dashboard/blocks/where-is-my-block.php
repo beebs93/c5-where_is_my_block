@@ -67,9 +67,28 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 	public function on_start(){
 		$objHh = Loader::helper('html');
 		
+		$arrJsConstants = array(
+			'URL_TOOL_PAGE_BLOCK_SEARCH' => Loader::helper('concrete/urls')->getToolsURL('page_block_list.php', 'where_is_my_block'),
+			'TEXT_GENERAL_ERROR' => t('There was an error with your request'),
+			'TEXT_AJAX_ERROR' => t('An Ajax error occured: '),
+			'TEXT_TABLE_COLUMNS' => array(
+				'page_name' => t('Page Name'),
+				'page_path' => t('Page Path'),
+				'instances' => t('Instances')
+			)
+		);
+
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
-		$this->addFooterItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
-		
+		$this->addFooterItem($objHh->javascript('wimb.js', 'where_is_my_block'));
+		$this->addFooterItem('
+		<script type="text/javascript">
+		jQuery.extend(WhereIsMyBlock, ' . json_encode($arrJsConstants) . ');
+
+		jQuery(document).ready(function(){
+			var WimbForm = new WhereIsMyBlock.Form();
+		});
+		</script>');
+
 		parent::on_start();
 	}
 	
@@ -86,17 +105,6 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		if(!$this->isAllowedBlockTypesSet()){
 			$this->setAllowedBlockTypes();
 		}
-
-		$arrJsConstants = array(
-			'URL_TOOL_PAGE_BLOCK_SEARCH' => Loader::helper('concrete/urls')->getToolsURL('page_block_list.php', 'where_is_my_block'),
-			'TEXT_GENERAL_ERROR' => t('There was an error with your request'),
-			'TEXT_AJAX_ERROR' => t('An Ajax error occured: '),
-			'TEXT_TABLE_COLUMNS' => array(
-				'page_name' => t('Page Name'),
-				'page_path' => t('Page Path'),
-				'instances' => t('Instances')
-			)
-		);
 
 		// Add any core helpers, models, etc. in the view scope
 		$this->set('objDh', $this->helperObjects['concrete_dashboard']);

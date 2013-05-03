@@ -1,13 +1,20 @@
 // NOTE: This non-minified file is kept for reference; it is not used anywhere
 
+var WhereIsMyBlock = {
+	URL_TOOL_PAGE_BLOCK_SEARCH: '',
+	TEXT_GENERAL_ERROR: '',
+	TEXT_AJAX_ERROR: '',
+	TEXT_TABLE_COLUMNS: {}
+};
+
+(function($){
+
 /**
  * Handles adjusting and auto-submitting the form upon user interaction
  *
  * @author Brad Beebe
  * @since v0.9.0
  */
-(function($){
-
 WhereIsMyBlock.Form = function(){
 	var _this = this,
 		$body = $('body'),
