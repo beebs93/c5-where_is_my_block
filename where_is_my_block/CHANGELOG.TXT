@@ -75,3 +75,6 @@
 1.1.0.0 - April 2013
 - Fixed error in caching logic
 - Stable release
+
+1.1.0.1 - May 2013
+- Re-arranged JS to allow form to work with Miser installed
