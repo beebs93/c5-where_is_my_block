@@ -79,7 +79,7 @@ class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
 		);
 
 		$this->addHeaderItem($objHh->css('wimb.css', 'where_is_my_block'));
-		$this->addFooterItem($objHh->javascript('wimb.js', 'where_is_my_block'));
+		$this->addFooterItem($objHh->javascript('wimb.min.js', 'where_is_my_block'));
 		$this->addFooterItem('
 		<script type="text/javascript">
 		jQuery.extend(WhereIsMyBlock, ' . json_encode($arrJsConstants) . ');
