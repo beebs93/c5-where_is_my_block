@@ -2,3 +2,6 @@
 *.LCK
 _notes
 INSTALL.TXT
+Gruntfile.js
+package.json
+node_modules/
