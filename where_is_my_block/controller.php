@@ -1,7 +1,12 @@
-<?php       
+<?php
+namespace Concrete\Package\WhereIsMyBlock;
+use Package;
+use SinglePage;
+use Loader;
+
 defined('C5_EXECUTE') or die(_('Access Denied.'));
 
-class WhereIsMyBlockPackage extends Package{
+class Controller extends Package{
 	protected $pkgHandle = 'where_is_my_block';
 	protected $appVersionRequired = '5.6.0.2';
 	protected $pkgVersion = '1.1.0.1';

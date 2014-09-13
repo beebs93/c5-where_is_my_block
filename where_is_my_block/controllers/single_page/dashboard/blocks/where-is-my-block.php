@@ -1,7 +1,12 @@
-<?php 
+<?php
+namespace Concrete\Package\WhereIsMyBlock\Controller\SinglePage\Dashboard\Blocks;
+use \Concrete\Core\Page\Controller\DashboardPageController;
+use Loader;
+use BlockTypeList;
+
 defined('C5_EXECUTE') or die(_('Access Denied.'));
 
-class DashboardBlocksWhereIsMyBlockController extends DashboardBaseController{
+class WhereIsMyBlock extends DashboardPageController{
 	protected $arrBlockTypes = array();
 	protected $arrItemsPerPage = array(10, 25, 50, 100, 500);
 	protected $arrSortableCols = array('page_name', 'page_path', 'instances');
